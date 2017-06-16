@@ -4,23 +4,25 @@ var bunyan_1 = require("bunyan");
 var Particle = require("particle-api-js");
 var rabbit = require("./rabbit");
 var log = bunyan_1.createLogger({ name: 'RConnect' });
+var sparkserver = process.env.rabc_sparkserver || 'http://' + process.env.SPARKSERVER_PORT_8080_TCP_ADDR + ':' + process.env.SPARKSERVER_PORT_8080_TCP_PORT;
 var particle = new Particle({
-    baseUrl: "" + process.env.rabc_sparkserver,
+    baseUrl: "" + sparkserver,
     clientId: 'CLI2',
     clientSecret: 'client_secret_here'
 });
-function globalLog(log) {
-    rabbit.send('GLOBAL_LOG', { server: sparkServerName, log: log });
+// Send State Infor
+function globalLog(data) {
+    rabbit.send('GLOBAL_LOG', { server: sparkServerName, data: data });
 }
 ;
 var token;
 var eventStream;
-var sparkServerName = ('' + process.env.rabc_sparkserver).replace(/http[s]*\:\/\//, '');
+var sparkServerName = ('' + sparkserver).replace(/http[s]*\:\/\//, '');
 function gotEvent(eventname, data) {
     log.info({ name: '' + eventname, data: data }, 'Event');
     rabbit.send('EV_' + eventname, data);
 }
-log.info({}, 'Starting up');
+log.info({ env: process.env }, 'Starting up');
 particle.login({ username: '' + process.env.rabc_username, password: '' + process.env.rabc_password })
     .then(function (data) {
     log.info({ body: data.body }, 'Login Completed');
@@ -66,6 +68,7 @@ particle.login({ username: '' + process.env.rabc_username, password: '' + proces
     process.exit(1);
 });
 var incomming = {};
+// Register a MQ with ServerName to listen for Commands to this SparkServer
 incomming['INCOMING_' + sparkServerName] = function (event) {
     log.info({ event: event }, 'Got incoming event');
 };

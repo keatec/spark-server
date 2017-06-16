@@ -5,7 +5,8 @@
   "main": "main.js",
   "scripts": {
     "start": "tsc && node main.js | bunyan -o short",
-    "start:prod": "node main.js | bunyan -o short"
+    "start:prod": "node main.js | bunyan -o short",
+    "docker:compile" : "tsc && docker build -t keatec/rabbitconnect:latest ."
   },
   "keywords": [],
   "author": "KEAtec GmbH",

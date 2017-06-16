@@ -14,11 +14,10 @@ var particle = new Particle({
 });
 
 
-function globalLog (log: any) {
-    rabbit.send('GLOBAL_LOG',{server: sparkServerName, log : log});
+// Send State Infor
+function globalLog (data: any) {
+    rabbit.send('GLOBAL_LOG',{server: sparkServerName, data : data});
 };
-
-
 
 type EventData = {
     [name: string]: any;
@@ -34,7 +33,7 @@ function gotEvent (eventname: string, data: EventData) {
 }
 
 
-log.info({}, 'Starting up');
+log.info({env: process.env},'Starting up');
 
 particle.login({ username: '' + process.env.rabc_username, password: '' + process.env.rabc_password })
     .then(function (data) {
@@ -79,6 +78,9 @@ particle.login({ username: '' + process.env.rabc_username, password: '' + proces
     })
 
 var incomming  = {};
+
+// Register a MQ with ServerName to listen for Commands to this SparkServer
+
 incomming['INCOMING_'+sparkServerName] = function (event: any) {
     log.info({event: event},'Got incoming event');
 };
