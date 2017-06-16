@@ -13,6 +13,13 @@ since BUNYAN is required please install bunyan-cli globaly
 npm install -g bunyan
 ```
 
+during development you also need to install the typescript compiler
+
+```
+npm install -g typescript
+```
+
+
 To start the connector you need to set the enviroment to your spark-server  
 A one-liner could be:
 
@@ -29,6 +36,10 @@ ord=<password>" && npm start
 
 
 > We use this parameter system cause this is designed to be run on automated enviroment like DOCKER, AZURECLOUD etc. This is the prefered way to do these things
+
+## Done
+* login to server using credentials from enviroment
+* output all events to log
 
 ## Todo
 
