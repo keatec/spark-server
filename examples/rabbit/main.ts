@@ -1,19 +1,38 @@
 import { createLogger } from "bunyan";
 import Promise from "bluebird";
 const Particle = require("particle-api-js");
-
+const rabbit = require("./rabbit");
 var log = createLogger({ name: 'RConnect' });
 
 
+var sparkserver = process.env.rabc_sparkserver || 'http://'+process.env.SPARKSERVER_PORT_8080_TCP_ADDR+':'+process.env.SPARKSERVER_PORT_8080_TCP_PORT
 
 var particle = new Particle({
-    baseUrl: "" + process.env.rabc_sparkserver,
+    baseUrl: "" + sparkserver,
     clientId: 'CLI2',
     clientSecret: 'client_secret_here'
 });
 
+
+function globalLog (log: any) {
+    rabbit.send('GLOBAL_LOG',{server: sparkServerName, log : log});
+};
+
+
+
+type EventData = {
+    [name: string]: any;
+}
+
 var token: string
 var eventStream: any;
+var sparkServerName : string =  (''+sparkserver).replace(/http[s]*\:\/\//,'');
+
+function gotEvent (eventname: string, data: EventData) {
+    log.info({name : ''+eventname, data: data},'Event');
+    rabbit.send('EV_'+eventname,data);
+}
+
 
 log.info({}, 'Starting up');
 
@@ -21,11 +40,23 @@ particle.login({ username: '' + process.env.rabc_username, password: '' + proces
     .then(function (data) {
         log.info({ body: data.body }, 'Login Completed');
         token = data.body.access_token;
+        globalLog({state: 'CONNECTED'});
         particle.getEventStream({ deviceId: 'mine', auth: token })
             .then(function (stream) {
+                globalLog({state: 'STREAMING'});
                 eventStream = stream;
                 stream.on('event', function (data) {
-                    log.info({name : 'Events', device: data.coreid, event: data.name},'Incomming Event');
+                    var edata: any;
+                    if (data.data[0] === '{') {
+                        try {
+                            edata = JSON.parse(data.data);
+                        } catch(err) {
+                            edata = {plain: data.data};
+                        }
+                    } else {
+                        edata = {plain: data.data}; 
+                    };
+                    gotEvent(data.name,{name: data.name, server: ''+sparkServerName, devicedid: data.coreid, data: edata});
                 });
                 stream.on('error', function (err) {
                     log.error({ e: err }, 'Stream has processed error');
@@ -47,6 +78,18 @@ particle.login({ username: '' + process.env.rabc_username, password: '' + proces
         process.exit(1);
     })
 
+var incomming  = {};
+incomming['INCOMING_'+sparkServerName] = function (event: any) {
+    log.info({event: event},'Got incoming event');
+};
+
+rabbit.register_receiver(incomming);
+
+process.on('SIGINT', function() {
+    process.exit(0);
+});
+
 log.info('Init Done.');
 
+globalLog({state: 'INIT DONE'});
 
