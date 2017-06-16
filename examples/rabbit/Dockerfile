@@ -1,7 +1,4 @@
 
-#
-# Local Cloud Sparc-Server  
-#
 
 #
 # based on Alpine Node (version 8 is tested, other Version should work as well)
