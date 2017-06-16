@@ -4,7 +4,7 @@
 
 * include a messaging server (rabbit MQ) into a spark server solution
 
-## Start
+# Start
 
 npm install will install all dependencies.
 
@@ -27,7 +27,11 @@ docker run -p 9999:15672 -p 9998:5672 -d --hostname rabbit --name rabbit rabbitm
 ```
 > Rabbit provides an excellent Management interface to look into the queues. Simply browse to your Rabbit server on port 9999 [http://rabbit:9999](http://rabbit:9999)
 
-To start the connector you need to set the enviroment to your spark-server  
+You also need a running sparkserver. (you can also startup a sparkserver using [https://hub.docker.com/r/keatec/spark-server/](https://hub.docker.com/r/keatec/spark-server/)) 
+
+
+
+# Running from Commandline
 A one-liner could be:
 
 **UNIX**
@@ -42,12 +46,29 @@ set "RABBIT_PORT_5672_TCP_ADDR=<rabbitip>" && set "RABBIT_PORT_5672_TCP_PORT=<ra
 
 If running inside a Docker system these startup connects automatically to RUNNING DOCKER containers 
 
-* **SPARKSERVER** (running spark server images) 
+* **SPARKSERVER** (running sparkserver) 
 * **RABBIT** (running rabbit MQ Server) 
 
 
 > We use this kind of parameter start cause this is designed to be run on automated enviroments like DOCKER, AZURECLOUD etc. This is the prefered way to do these things
- 
+
+# Running inside docker
+
+## 1. Build the image
+You can skip this step and go directly to 2. (the image will be read from docker.hub) 
+```
+    npm run docker:compile
+```
+This will build an image called ```keatec/rabbitconnect:latest``` inside your container
+
+## 2. Start an instance
+
+You can simply call the script provided. (please ensure a "rabbit" instance and a "sparkserver" instance is running)
+
+```
+    ./docker_run.sh <username_for_sparkserver> <password>
+```
+
 
 ## Done
 * login to server using credentials from enviroment
