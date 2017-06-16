@@ -1,0 +1,21 @@
+{
+  "name": "rabbit",
+  "version": "0.1.0",
+  "description": "Rabbit Connector for Spark-server",
+  "main": "main.js",
+  "scripts": {
+    "start": "tsc && node main.js | bunyan -o short"
+  },
+  "keywords": [],
+  "author": "KEAtec GmbH",
+  "license": "AGPL-3.0",
+  "dependencies": {
+    "bluebird": "^3.5.0",
+    "bunyan": "^1.8.10",
+    "particle-api-js": "^6.5.0"
+  },
+  "devDependencies": {
+    "@types/bunyan": "^1.8.0",
+    "bluebird": "^3.5.0"
+  }
+}
