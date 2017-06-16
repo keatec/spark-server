@@ -10,11 +10,15 @@ var particle = new Particle({
     clientId: 'CLI2',
     clientSecret: 'client_secret_here'
 });
+globalLog({ state: 'START' });
 // Send State Infor
 function globalLog(data) {
     rabbit.send('GLOBAL_LOG', { server: sparkServerName, data: data });
 }
 ;
+setInterval(function () {
+    rabbit.send('GLOBAL_LOG', { server: sparkServerName, data: { alive: 1 } });
+}, 30 * 1000).unref();
 var token;
 var eventStream;
 var sparkServerName = ('' + sparkserver).replace(/http[s]*\:\/\//, '');

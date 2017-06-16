@@ -13,6 +13,8 @@ var particle = new Particle({
     clientSecret: 'client_secret_here'
 });
 
+globalLog({state: 'START'});
+
 
 // Send State Infor
 function globalLog (data: any) {
@@ -22,6 +24,10 @@ function globalLog (data: any) {
 type EventData = {
     [name: string]: any;
 }
+
+setInterval(() => {
+    rabbit.send('GLOBAL_LOG',{server: sparkServerName, data : {alive: 1}});
+},30*1000).unref();
 
 var token: string
 var eventStream: any;
