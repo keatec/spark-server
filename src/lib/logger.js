@@ -19,37 +19,28 @@
 *
 */
 
-import chalk from 'chalk';
-import settings from '../settings';
+import { Logger as DefaultLogger } from './DefaultLogger';
+import { ILogger } from '../types';
 
-function _transform(...params: Array<any>): Array<any> {
-  return params.map((param: any): string => {
-    if (typeof param === 'string') {
-      return param;
-    }
+export default class Logger {
+  static _logger: ILogger = DefaultLogger;
 
-    return JSON.stringify(param);
-  });
-}
-
-class Logger {
-  static log(...params: Array<any>) {
-    if (settings.SHOW_VERBOSE_DEVICE_LOGS) {
-      console.log(_transform(...params));
-    }
+  static error(...params: Array<any>) {
+    Logger._logger.error(...params);
   }
 
   static info(...params: Array<any>) {
-    console.log(chalk.cyan(_transform(...params)));
+    Logger._logger.info(...params);
   }
 
+  static initialize(logger: ILogger) {
+    Logger._logger = logger;
+  }
+
+  static log(...params: Array<any>) {
+    Logger._logger.log(...params);
+  }
   static warn(...params: Array<any>) {
-    console.warn(chalk.yellow(_transform(...params)));
-  }
-
-  static error(...params: Array<any>) {
-    console.error(chalk.red(_transform(...params)));
+    Logger._logger.warn(...params);
   }
 }
-
-export default Logger;

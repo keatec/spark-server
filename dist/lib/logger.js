@@ -3,6 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.default = undefined;
 
 var _classCallCheck2 = require('babel-runtime/helpers/classCallCheck');
 
@@ -12,17 +13,9 @@ var _createClass2 = require('babel-runtime/helpers/createClass');
 
 var _createClass3 = _interopRequireDefault(_createClass2);
 
-var _stringify = require('babel-runtime/core-js/json/stringify');
+var _DefaultLogger = require('./DefaultLogger');
 
-var _stringify2 = _interopRequireDefault(_stringify);
-
-var _chalk = require('chalk');
-
-var _chalk2 = _interopRequireDefault(_chalk);
-
-var _settings = require('../settings');
-
-var _settings2 = _interopRequireDefault(_settings);
+var _types = require('../types');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -47,49 +40,47 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 *
 */
 
-function _transform() {
-  for (var _len = arguments.length, params = Array(_len), _key = 0; _key < _len; _key++) {
-    params[_key] = arguments[_key];
-  }
-
-  return params.map(function (param) {
-    if (typeof param === 'string') {
-      return param;
-    }
-
-    return (0, _stringify2.default)(param);
-  });
-}
-
 var Logger = function () {
   function Logger() {
     (0, _classCallCheck3.default)(this, Logger);
   }
 
   (0, _createClass3.default)(Logger, null, [{
-    key: 'log',
-    value: function log() {
-      if (_settings2.default.SHOW_VERBOSE_DEVICE_LOGS) {
-        console.log(_transform.apply(undefined, arguments));
-      }
+    key: 'error',
+    value: function error() {
+      var _Logger$_logger;
+
+      (_Logger$_logger = Logger._logger).error.apply(_Logger$_logger, arguments);
     }
   }, {
     key: 'info',
     value: function info() {
-      console.log(_chalk2.default.cyan(_transform.apply(undefined, arguments)));
+      var _Logger$_logger2;
+
+      (_Logger$_logger2 = Logger._logger).info.apply(_Logger$_logger2, arguments);
+    }
+  }, {
+    key: 'initialize',
+    value: function initialize(logger) {
+      Logger._logger = logger;
+    }
+  }, {
+    key: 'log',
+    value: function log() {
+      var _Logger$_logger3;
+
+      (_Logger$_logger3 = Logger._logger).log.apply(_Logger$_logger3, arguments);
     }
   }, {
     key: 'warn',
     value: function warn() {
-      console.warn(_chalk2.default.yellow(_transform.apply(undefined, arguments)));
-    }
-  }, {
-    key: 'error',
-    value: function error() {
-      console.error(_chalk2.default.red(_transform.apply(undefined, arguments)));
+      var _Logger$_logger4;
+
+      (_Logger$_logger4 = Logger._logger).warn.apply(_Logger$_logger4, arguments);
     }
   }]);
   return Logger;
 }();
 
+Logger._logger = _DefaultLogger.Logger;
 exports.default = Logger;

@@ -40,7 +40,7 @@ exports.default = function (container, settings, existingApp) {
   };
 
   if (settings.LOG_REQUESTS) {
-    app.use((0, _morgan2.default)('combined'));
+    app.use((0, _morgan2.default)('[:date[iso]] :remote-addr - :remote-user ":method :url ' + 'HTTP/:http-version" :status :res[content-length] ":referrer" ' + '":user-agent"'));
   }
 
   app.use(_bodyParser2.default.json());

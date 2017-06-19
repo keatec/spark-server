@@ -83,6 +83,7 @@ export type DeviceAttributes = {
 };
 
 export type DeviceKeyObject = {
+  algorithm: 'ecc' | 'rsa',
   deviceID: string,
   key: string,
 };
@@ -230,4 +231,11 @@ export interface IBaseDatabase {
   findOne(collectionName: string, ...args: Array<any>): Promise<*>;
   insertOne(collectionName: string, ...args: Array<any>): Promise<*>;
   remove(collectionName: string, query: Object): Promise<*>;
+}
+
+export interface ILogger {
+  static error(params: Array<any>): void;
+  static info(params: Array<any>): void;
+  static log(params: Array<any>): void;
+  static warn(params: Array<any>): void;
 }
