@@ -42,33 +42,39 @@ function getDate(): string {
 }
 
 export class Logger implements ILogger {
+  name: string = 'default'
 
-  static log(...params: Array<any>) {
+  constructor(name: string) {
+    this.name = name;
+  }
+
+  log(...params: Array<any>) {
     if (settings.SHOW_VERBOSE_DEVICE_LOGS) {
-      Logger._log(`[${getDate()}]`, _transform(...params));
+      Logger._log(`[${getDate()}] ${this.name}`, _transform(...params));
     }
   }
 
-  static info(...params: Array<any>) {
+  info(...params: Array<any>) {
     Logger._log(
-      `[${getDate()}]`,
+      `[${getDate()}] ${this.name}`,
       chalk.cyan(_transform(...params)),
     );
   }
 
-  static warn(...params: Array<any>) {
+  warn(...params: Array<any>) {
     Logger._log(
-      `[${getDate()}]`,
+      `[${getDate()}] ${this.name}`,
       chalk.yellow(_transform(...params)),
     );
   }
 
-  static error(...params: Array<any>) {
+  error(...params: Array<any>) {
     Logger._log(
-      `[${getDate()}]`,
+      `[${getDate()}] ${this.name}`,
       chalk.red(_transform(...params)),
     );
   }
+
   static _log(...params: Array<any>) {
     console.log(...params);
   }

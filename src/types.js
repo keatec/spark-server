@@ -234,8 +234,8 @@ export interface IBaseDatabase {
 }
 
 export interface ILogger {
-  static error(params: Array<any>): void;
-  static info(params: Array<any>): void;
-  static log(params: Array<any>): void;
-  static warn(params: Array<any>): void;
+  error(params: Array<any>): void;
+  info(params: Array<any>): void;
+  log(params: Array<any>): void;
+  warn(params: Array<any>): void;
 }
