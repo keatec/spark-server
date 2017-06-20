@@ -42,13 +42,17 @@ export default (
   };
 
   if (settings.LOG_REQUESTS) {
-    app.use(
-      morgan(
-        '[:date[iso]] :remote-addr - :remote-user ":method :url ' +
-          'HTTP/:http-version" :status :res[content-length] ":referrer" ' +
-          '":user-agent"',
-      ),
-    );
+    logger.warn('Request logging enabled');
+    if (!logger.debug()) logger.warn('Request will not log, cause Bunyan loglevel is different!');
+    const useLogger = logger;
+    app.use(bunyanMiddleware({
+      headerName: 'X-Request-Id',
+      level: 'debug',
+      logger: useLogger,
+      logName: 'req_id',
+      obscureHeaders: [],
+      propertyName: 'reqId',
+    }));
   }
 
   app.use(bodyParser.json());
