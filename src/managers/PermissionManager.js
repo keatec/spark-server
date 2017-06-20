@@ -75,7 +75,7 @@ class PermissionManager {
         `New default admin user created with token: ${token}`,
       );
     } catch (error) {
-      logger.error(`Error during default admin user creating: ${error}`);
+      logger.error({ err: error }, 'Error during default admin user creating');
     }
   };
 

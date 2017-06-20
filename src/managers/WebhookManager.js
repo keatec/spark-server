@@ -173,7 +173,7 @@ class WebhookManager {
 
         this.runWebhookThrottled(webhook, event);
       } catch (error) {
-        logger.error(`webhookError: ${error}`);
+        logger.error({ err: error }, 'webhookError');
       }
     };
 
@@ -288,7 +288,7 @@ class WebhookManager {
         responseEventData,
       );
     } catch (error) {
-      logger.error(`webhookError: ${error}`);
+      logger.error({ err: error }, 'webhookError');
     }
   };
 
