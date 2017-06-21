@@ -31,14 +31,14 @@
     "build:clean": "rimraf ./build",
     "build:watch": "babel ./src --out-dir ./dist --watch",
     "lint": "eslint --fix --max-warnings 0 -- .",
-    "migrate-to-mongo": "babel-node ./src/scripts/migrateFilesToDatabase mongo",
-    "migrate-to-tingo": "babel-node ./src/scripts/migrateFilesToDatabase tingo",
+    "migrate-files-to-mongo": "babel-node ./src/scripts/migrateFilesToDatabase mongo",
+    "migrate-files-to-nedb": "babel-node ./src/scripts/migrateFilesToDatabase nedb",
     "prebuild": "npm run build:clean",
     "start:warn": "babel-node ./src/main.js --trace-warnings",
     "start": "nodemon --exec babel-node ./src/main.js --watch src --watch ../spark-protocol/dist --ignore data",
     "start:debug": "nodemon --exec babel-node ./src/main.js --watch src --watch ../spark-protocol/src --ignore data",
     "start:prod": "node ./dist/main.js",
-    "test": "ava --serial",
+    "test": "ava --serial --no-cache",
     "test:watch": "ava --watch --serial",
     "update-firmware": "node ./node_modules/spark-protocol/dist/scripts/update-firmware-binaries",
     "watch": "babel ./src --out-dir ./dist --watch"
@@ -86,7 +86,6 @@
     "request": "*",
     "rmfr": "^1.0.1",
     "spark-protocol": "git+https://github.com/Brewskey/spark-protocol.git#dev",
-    "tingodb": "git+https://github.com/Brewskey/tingodb.git",
     "uuid": "^3.0.1"
   },
   "devDependencies": {
