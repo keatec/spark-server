@@ -85,13 +85,7 @@ function _applyDecoratedDescriptor(target, property, decorators, descriptor, con
   return desc;
 }
 
-var OauthClientsController = (_dec = (0, _httpVerb2.default)('post'), _dec2 = (0, _route2.default)('/v1/products/:productIDorSlug/clients/'
-// eslint-disable-next-line class-methods-use-this
-), _dec3 = (0, _httpVerb2.default)('put'), _dec4 = (0, _route2.default)('/v1/products/:productIDorSlug/clients/:clientID'
-// eslint-disable-next-line class-methods-use-this
-), _dec5 = (0, _httpVerb2.default)('delete'), _dec6 = (0, _route2.default)('/v1/products/:productIDorSlug/clients/:clientID'
-// eslint-disable-next-line class-methods-use-this
-), (_class = function (_Controller) {
+var OauthClientsController = (_dec = (0, _httpVerb2.default)('post'), _dec2 = (0, _route2.default)('/v1/products/:productIDorSlug/clients/'), _dec3 = (0, _httpVerb2.default)('put'), _dec4 = (0, _route2.default)('/v1/products/:productIDorSlug/clients/:clientID'), _dec5 = (0, _httpVerb2.default)('delete'), _dec6 = (0, _route2.default)('/v1/products/:productIDorSlug/clients/:clientID'), (_class = function (_Controller) {
   (0, _inherits3.default)(OauthClientsController, _Controller);
 
   function OauthClientsController() {
@@ -101,6 +95,8 @@ var OauthClientsController = (_dec = (0, _httpVerb2.default)('post'), _dec2 = (0
 
   (0, _createClass3.default)(OauthClientsController, [{
     key: 'createClient',
+
+    // eslint-disable-next-line class-methods-use-this
     value: function () {
       var _ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee() {
         return _regenerator2.default.wrap(function _callee$(_context) {
@@ -125,6 +121,8 @@ var OauthClientsController = (_dec = (0, _httpVerb2.default)('post'), _dec2 = (0
     }()
   }, {
     key: 'editClient',
+
+    // eslint-disable-next-line class-methods-use-this
     value: function () {
       var _ref2 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee2() {
         return _regenerator2.default.wrap(function _callee2$(_context2) {
@@ -149,6 +147,8 @@ var OauthClientsController = (_dec = (0, _httpVerb2.default)('post'), _dec2 = (0
     }()
   }, {
     key: 'deleteClient',
+
+    // eslint-disable-next-line class-methods-use-this
     value: function () {
       var _ref3 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee3() {
         return _regenerator2.default.wrap(function _callee3$(_context3) {
