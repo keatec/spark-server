@@ -32,18 +32,28 @@ var Logger = function () {
 
   (0, _createClass3.default)(Logger, null, [{
     key: 'createLogger',
-    value: function createLogger(aName) {
+    value: function createLogger(applicationName) {
       return _bunyan2.default.createLogger({
         level: process.env.LOG_LEVEL !== undefined ? process.env.LOG_LEVEL : 'info',
+<<<<<<< 3175cdd3571f91ce76ceadb1edf36fb89e2d5d21
         name: aName
+=======
+        name: applicationName,
+        serializers: _bunyan2.default.stdSerializers
+>>>>>>> added Requested Changes
       });
     }
   }, {
     key: 'createModuleLogger',
-    value: function createModuleLogger(aModule) {
+    value: function createModuleLogger(applicationModule) {
       return _bunyan2.default.createLogger({
         level: process.env.LOG_LEVEL !== undefined ? process.env.LOG_LEVEL : 'info',
+<<<<<<< 3175cdd3571f91ce76ceadb1edf36fb89e2d5d21
         name: _path2.default.basename(aModule.filename)
+=======
+        name: _path2.default.basename(applicationModule.filename),
+        serializers: _bunyan2.default.stdSerializers
+>>>>>>> added Requested Changes
       });
     }
   }]);

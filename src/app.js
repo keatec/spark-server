@@ -12,8 +12,10 @@ import type { Settings } from './types';
 
 import bodyParser from 'body-parser';
 import express from 'express';
-import morgan from 'morgan';
+import Logger from './lib/logger';
 import routeConfig from './RouteConfig';
+import bunyanMiddleware from 'bunyan-middleware';
+const logger = Logger.createModuleLogger(module);
 
 export default (
   container: Container,
@@ -42,8 +44,11 @@ export default (
   };
 
   if (settings.LOG_REQUESTS) {
-    logger.warn('Request logging enabled');
-    if (!logger.debug()) logger.warn('Request will not log, cause Bunyan loglevel is different!');
+    if (logger.debug()) {
+      logger.warn('Request logging enabled');
+    } else {
+      logger.warn('Request will not log, cause Bunyan loglevel is different!');
+    }
     const useLogger = logger;
     app.use(bunyanMiddleware({
       headerName: 'X-Request-Id',
