@@ -359,7 +359,7 @@ test('should throw an error if wrong requestType is provided', async t => {
   };
   const defaultRequestData = getDefaultRequestData(event);
 
-  Logger.error = sinon.spy((message: string) => {
+  logger.error = sinon.spy((message: string) => {
     t.is(message, 'webhookError: Error: wrong requestType');
   });
 

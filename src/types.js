@@ -155,7 +155,7 @@ export type Settings = {
   },
   FIRMWARE_DIRECTORY: string,
   FIRMWARE_REPOSITORY_DIRECTORY: string,
-  LOG_LEVEL: 'debug' | 'error' | 'fatal' | 'info' | 'warn' | 'trace',
+  LOG_LEVEL: 'debug' | 'error' | 'fatal' | 'info' | 'warn' | 'trace' | string,
   LOGIN_ROUTE: string,
   SERVER_KEY_FILENAME: string,
   SERVER_KEYS_DIRECTORY: string,
