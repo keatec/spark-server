@@ -51,7 +51,10 @@ const {
 } = settings.EXPRESS_SERVER_CONFIG;
 
 if (useSSL) {
-  logger.debug({ cert: certificateFilePath, key: privateKeyFilePath }, 'Use SSL');
+  logger.debug(
+    { cert: certificateFilePath, key: privateKeyFilePath },
+    'Use SSL',
+  );
   const options = {
     cert:
       certificateFilePath && fs.readFileSync(nulltrhows(certificateFilePath)),

@@ -47,39 +47,16 @@ exports.default = function (container, settings, existingApp) {
     return next();
   };
 
-  if (settings.LOG_REQUESTS) {
-<<<<<<< HEAD
-<<<<<<< 3175cdd3571f91ce76ceadb1edf36fb89e2d5d21
-<<<<<<< ed7ce9c23565a440fe875df037353fd5f4330b0d
-    app.use((0, _morgan2.default)('[:date[iso]] :remote-addr - :remote-user ":method :url ' + 'HTTP/:http-version" :status :res[content-length] ":referrer" ' + '":user-agent"'));
-=======
-    logger.warn('Request logging enabled');
-    if (!logger.debug()) logger.warn('Request will not log, cause Bunyan loglevel is different!');
-=======
-=======
->>>>>>> 0b5a636a4e3e56c2f813df9fb1670df13e2d4c95
-    if (logger.debug()) {
-      logger.warn('Request logging enabled');
-    } else {
-      logger.warn('Request will not log, cause Bunyan loglevel is different!');
-    }
-<<<<<<< HEAD
->>>>>>> added Requested Changes
-=======
->>>>>>> 0b5a636a4e3e56c2f813df9fb1670df13e2d4c95
-    var useLogger = logger;
+  if (logger.debug()) {
     app.use((0, _bunyanMiddleware2.default)({
       headerName: 'X-Request-Id',
       level: 'debug',
-      logger: useLogger,
+      logger: logger,
       logName: 'req_id',
       obscureHeaders: [],
       propertyName: 'reqId'
     }));
-<<<<<<< HEAD
->>>>>>> added correct handle of loglevel to bunyan-middleware
-=======
->>>>>>> 0b5a636a4e3e56c2f813df9fb1670df13e2d4c95
+    logger.warn('Request logging enabled');
   }
 
   app.use(_bodyParser2.default.json());

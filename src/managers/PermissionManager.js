@@ -78,10 +78,9 @@ class PermissionManager {
         'administrator',
       );
 
-      const aToken = await this._generateAdminToken();
+      const token = await this._generateAdminToken();
 
-      logger.info({ token: aToken }, 'New default admin user created',
-      );
+      logger.info({ token }, 'New default admin user created');
     } catch (error) {
       logger.error({ err: error }, 'Error during default admin user creating');
     }
@@ -127,7 +126,10 @@ class PermissionManager {
       settings.DEFAULT_ADMIN_USERNAME,
     );
     if (defaultAdminUser) {
-      logger.info({ token: defaultAdminUser.accessTokens[0].accessToken }, 'Default Admin token');
+      logger.info(
+        { token: defaultAdminUser.accessTokens[0].accessToken },
+        'Default Admin token',
+      );
     } else {
       await this._createDefaultAdminUser();
     }

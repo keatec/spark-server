@@ -82,7 +82,10 @@ class DevicesController extends Controller {
     } catch (error) {
       // I wish we could return no devices found but meh :/
       // at least we should issue a warning
-      logger.warn({ err: error }, 'get devices throws error, possibly no devices found?');
+      logger.warn(
+        { err: error },
+        'get devices throws error, possibly no devices found?',
+      );
       return this.ok([]);
     }
   }

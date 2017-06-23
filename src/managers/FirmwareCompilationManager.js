@@ -118,7 +118,7 @@ class FirmwareCompilationManager {
 
     const errors = [];
     makeProcess.stderr.on('data', (data: string) => {
-      logger.error({ errordata: data }, 'Error from MakeProcess');
+      logger.error({ data }, 'Error from MakeProcess');
       errors.push(`${data}`);
     });
 

@@ -4,6 +4,18 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _getOwnPropertyDescriptor = require('babel-runtime/core-js/object/get-own-property-descriptor');
+
+var _getOwnPropertyDescriptor2 = _interopRequireDefault(_getOwnPropertyDescriptor);
+
+var _regenerator = require('babel-runtime/regenerator');
+
+var _regenerator2 = _interopRequireDefault(_regenerator);
+
+var _asyncToGenerator2 = require('babel-runtime/helpers/asyncToGenerator');
+
+var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
+
 var _getPrototypeOf = require('babel-runtime/core-js/object/get-prototype-of');
 
 var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
@@ -24,6 +36,8 @@ var _inherits2 = require('babel-runtime/helpers/inherits');
 
 var _inherits3 = _interopRequireDefault(_inherits2);
 
+var _dec, _dec2, _dec3, _dec4, _dec5, _dec6, _desc, _value, _class;
+
 var _Controller2 = require('./Controller');
 
 var _Controller3 = _interopRequireDefault(_Controller2);
@@ -42,9 +56,6 @@ var _route2 = _interopRequireDefault(_route);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-<<<<<<< 3175cdd3571f91ce76ceadb1edf36fb89e2d5d21
-var OauthClientsController = function (_Controller) {
-=======
 function _applyDecoratedDescriptor(target, property, decorators, descriptor, context) {
   var desc = {};
   Object['ke' + 'ys'](descriptor).forEach(function (key) {
@@ -75,10 +86,6 @@ function _applyDecoratedDescriptor(target, property, decorators, descriptor, con
 }
 
 var OauthClientsController = (_dec = (0, _httpVerb2.default)('post'), _dec2 = (0, _route2.default)('/v1/products/:productIDorSlug/clients/'), _dec3 = (0, _httpVerb2.default)('put'), _dec4 = (0, _route2.default)('/v1/products/:productIDorSlug/clients/:clientID'), _dec5 = (0, _httpVerb2.default)('delete'), _dec6 = (0, _route2.default)('/v1/products/:productIDorSlug/clients/:clientID'), (_class = function (_Controller) {
-<<<<<<< HEAD
->>>>>>> added Requested Changes
-=======
->>>>>>> 0b5a636a4e3e56c2f813df9fb1670df13e2d4c95
   (0, _inherits3.default)(OauthClientsController, _Controller);
 
   function OauthClientsController() {
@@ -88,29 +95,6 @@ var OauthClientsController = (_dec = (0, _httpVerb2.default)('post'), _dec2 = (0
 
   (0, _createClass3.default)(OauthClientsController, [{
     key: 'createClient',
-<<<<<<< HEAD
-<<<<<<< 3175cdd3571f91ce76ceadb1edf36fb89e2d5d21
-    // eslint-disable-next-line class-methods-use-this
-    value: function createClient() {
-      throw new _HttpError2.default('not supported in the current server version');
-    }
-  }, {
-    key: 'editClient',
-    // eslint-disable-next-line class-methods-use-this
-    value: function editClient() {
-      throw new _HttpError2.default('not supported in the current server version');
-    }
-  }, {
-    key: 'deleteClient',
-    // eslint-disable-next-line class-methods-use-this
-    value: function deleteClient() {
-      throw new _HttpError2.default('not supported in the current server version');
-    }
-=======
-=======
->>>>>>> 0b5a636a4e3e56c2f813df9fb1670df13e2d4c95
-
-    // eslint-disable-next-line class-methods-use-this
     value: function () {
       var _ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee() {
         return _regenerator2.default.wrap(function _callee$(_context) {
@@ -135,8 +119,6 @@ var OauthClientsController = (_dec = (0, _httpVerb2.default)('post'), _dec2 = (0
     }()
   }, {
     key: 'editClient',
-
-    // eslint-disable-next-line class-methods-use-this
     value: function () {
       var _ref2 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee2() {
         return _regenerator2.default.wrap(function _callee2$(_context2) {
@@ -161,8 +143,6 @@ var OauthClientsController = (_dec = (0, _httpVerb2.default)('post'), _dec2 = (0
     }()
   }, {
     key: 'deleteClient',
-
-    // eslint-disable-next-line class-methods-use-this
     value: function () {
       var _ref3 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee3() {
         return _regenerator2.default.wrap(function _callee3$(_context3) {
@@ -185,9 +165,7 @@ var OauthClientsController = (_dec = (0, _httpVerb2.default)('post'), _dec2 = (0
 
       return deleteClient;
     }()
->>>>>>> added Requested Changes
   }]);
   return OauthClientsController;
-}(_Controller3.default);
-
+}(_Controller3.default), (_applyDecoratedDescriptor(_class.prototype, 'createClient', [_dec, _dec2], (0, _getOwnPropertyDescriptor2.default)(_class.prototype, 'createClient'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'editClient', [_dec3, _dec4], (0, _getOwnPropertyDescriptor2.default)(_class.prototype, 'editClient'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'deleteClient', [_dec5, _dec6], (0, _getOwnPropertyDescriptor2.default)(_class.prototype, 'deleteClient'), _class.prototype)), _class));
 exports.default = OauthClientsController;

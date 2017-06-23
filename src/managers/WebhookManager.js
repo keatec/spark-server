@@ -176,11 +176,11 @@ class WebhookManager {
         userID: event.userID,
       });
 
-        this.runWebhookThrottled(webhook, event);
-      } catch (error) {
-        logger.error({ err: error }, 'webhookError');
-      }
-    };
+      this.runWebhookThrottled(webhook, event);
+    } catch (error) {
+      logger.error({ err: error }, 'webhookError');
+    }
+  };
 
   runWebhook = async (webhook: Webhook, event: Event): Promise<void> => {
     try {
