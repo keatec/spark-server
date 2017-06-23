@@ -35,17 +35,8 @@ var Logger = function () {
     value: function createLogger(applicationName) {
       return _bunyan2.default.createLogger({
         level: process.env.LOG_LEVEL !== undefined ? process.env.LOG_LEVEL : 'info',
-<<<<<<< HEAD
-<<<<<<< 3175cdd3571f91ce76ceadb1edf36fb89e2d5d21
-        name: aName
-=======
         name: applicationName,
         serializers: _bunyan2.default.stdSerializers
->>>>>>> added Requested Changes
-=======
-        name: applicationName,
-        serializers: _bunyan2.default.stdSerializers
->>>>>>> 0b5a636a4e3e56c2f813df9fb1670df13e2d4c95
       });
     }
   }, {
@@ -53,17 +44,8 @@ var Logger = function () {
     value: function createModuleLogger(applicationModule) {
       return _bunyan2.default.createLogger({
         level: process.env.LOG_LEVEL !== undefined ? process.env.LOG_LEVEL : 'info',
-<<<<<<< HEAD
-<<<<<<< 3175cdd3571f91ce76ceadb1edf36fb89e2d5d21
-        name: _path2.default.basename(aModule.filename)
-=======
         name: _path2.default.basename(applicationModule.filename),
         serializers: _bunyan2.default.stdSerializers
->>>>>>> added Requested Changes
-=======
-        name: _path2.default.basename(applicationModule.filename),
-        serializers: _bunyan2.default.stdSerializers
->>>>>>> 0b5a636a4e3e56c2f813df9fb1670df13e2d4c95
       });
     }
   }]);
