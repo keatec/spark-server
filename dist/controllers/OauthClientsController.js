@@ -75,7 +75,10 @@ function _applyDecoratedDescriptor(target, property, decorators, descriptor, con
 }
 
 var OauthClientsController = (_dec = (0, _httpVerb2.default)('post'), _dec2 = (0, _route2.default)('/v1/products/:productIDorSlug/clients/'), _dec3 = (0, _httpVerb2.default)('put'), _dec4 = (0, _route2.default)('/v1/products/:productIDorSlug/clients/:clientID'), _dec5 = (0, _httpVerb2.default)('delete'), _dec6 = (0, _route2.default)('/v1/products/:productIDorSlug/clients/:clientID'), (_class = function (_Controller) {
+<<<<<<< HEAD
 >>>>>>> added Requested Changes
+=======
+>>>>>>> 0b5a636a4e3e56c2f813df9fb1670df13e2d4c95
   (0, _inherits3.default)(OauthClientsController, _Controller);
 
   function OauthClientsController() {
@@ -85,6 +88,7 @@ var OauthClientsController = (_dec = (0, _httpVerb2.default)('post'), _dec2 = (0
 
   (0, _createClass3.default)(OauthClientsController, [{
     key: 'createClient',
+<<<<<<< HEAD
 <<<<<<< 3175cdd3571f91ce76ceadb1edf36fb89e2d5d21
     // eslint-disable-next-line class-methods-use-this
     value: function createClient() {
@@ -103,6 +107,8 @@ var OauthClientsController = (_dec = (0, _httpVerb2.default)('post'), _dec2 = (0
       throw new _HttpError2.default('not supported in the current server version');
     }
 =======
+=======
+>>>>>>> 0b5a636a4e3e56c2f813df9fb1670df13e2d4c95
 
     // eslint-disable-next-line class-methods-use-this
     value: function () {

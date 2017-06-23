@@ -27,23 +27,33 @@ export default class Logger implements ILoggerCreate {
   static createLogger(applicationName: string): ILogger {
     return bunyan.createLogger({
       level: process.env.LOG_LEVEL !== undefined ? process.env.LOG_LEVEL : 'info',
+<<<<<<< HEAD
 <<<<<<< 3175cdd3571f91ce76ceadb1edf36fb89e2d5d21
       name: aName,
 =======
       name: applicationName,
       serializers: bunyan.stdSerializers,
 >>>>>>> added Requested Changes
+=======
+      name: applicationName,
+      serializers: bunyan.stdSerializers,
+>>>>>>> 0b5a636a4e3e56c2f813df9fb1670df13e2d4c95
     });
   }
   static createModuleLogger(applicationModule: any): ILogger {
     return bunyan.createLogger({
       level: process.env.LOG_LEVEL !== undefined ? process.env.LOG_LEVEL : 'info',
+<<<<<<< HEAD
 <<<<<<< 3175cdd3571f91ce76ceadb1edf36fb89e2d5d21
       name: path.basename(aModule.filename),
 =======
       name: path.basename(applicationModule.filename),
       serializers: bunyan.stdSerializers,
 >>>>>>> added Requested Changes
+=======
+      name: path.basename(applicationModule.filename),
+      serializers: bunyan.stdSerializers,
+>>>>>>> 0b5a636a4e3e56c2f813df9fb1670df13e2d4c95
     });
   }
 }

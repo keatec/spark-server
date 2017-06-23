@@ -7,8 +7,12 @@ import type {
   Middleware,
   NextFunction,
 } from 'express';
-import type { Container } from 'constitute';
-import type { Settings } from './types';
+import type {
+  Container,
+} from 'constitute';
+import type {
+  Settings,
+} from './types';
 
 import bodyParser from 'body-parser';
 import express from 'express';
@@ -39,7 +43,9 @@ export default (
       });
       return response.sendStatus(204);
     }
-    response.set({ 'Access-Control-Allow-Origin': '*' });
+    response.set({
+      'Access-Control-Allow-Origin': '*',
+    });
     return next();
   };
   
@@ -56,13 +62,14 @@ export default (
   }
 
   app.use(bodyParser.json());
-  app.use(bodyParser.urlencoded({ extended: true }));
+  app.use(bodyParser.urlencoded({
+    extended: true,
+  }));
   app.use(setCORSHeaders);
 
   routeConfig(
     app,
-    container,
-    [
+    container, [
       'DeviceClaimsController',
       // to avoid routes collisions EventsController should be placed
       // before DevicesController

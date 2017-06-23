@@ -12,15 +12,21 @@ var _express = require('express');
 
 var _express2 = _interopRequireDefault(_express);
 
-var _morgan = require('morgan');
+var _logger = require('./lib/logger');
 
-var _morgan2 = _interopRequireDefault(_morgan);
+var _logger2 = _interopRequireDefault(_logger);
 
 var _RouteConfig = require('./RouteConfig');
 
 var _RouteConfig2 = _interopRequireDefault(_RouteConfig);
 
+var _bunyanMiddleware = require('bunyan-middleware');
+
+var _bunyanMiddleware2 = _interopRequireDefault(_bunyanMiddleware);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var logger = _logger2.default.createModuleLogger(module);
 
 exports.default = function (container, settings, existingApp) {
   var app = existingApp || (0, _express2.default)();
@@ -35,11 +41,14 @@ exports.default = function (container, settings, existingApp) {
       });
       return response.sendStatus(204);
     }
-    response.set({ 'Access-Control-Allow-Origin': '*' });
+    response.set({
+      'Access-Control-Allow-Origin': '*'
+    });
     return next();
   };
 
   if (settings.LOG_REQUESTS) {
+<<<<<<< HEAD
 <<<<<<< 3175cdd3571f91ce76ceadb1edf36fb89e2d5d21
 <<<<<<< ed7ce9c23565a440fe875df037353fd5f4330b0d
     app.use((0, _morgan2.default)('[:date[iso]] :remote-addr - :remote-user ":method :url ' + 'HTTP/:http-version" :status :res[content-length] ":referrer" ' + '":user-agent"'));
@@ -47,12 +56,17 @@ exports.default = function (container, settings, existingApp) {
     logger.warn('Request logging enabled');
     if (!logger.debug()) logger.warn('Request will not log, cause Bunyan loglevel is different!');
 =======
+=======
+>>>>>>> 0b5a636a4e3e56c2f813df9fb1670df13e2d4c95
     if (logger.debug()) {
       logger.warn('Request logging enabled');
     } else {
       logger.warn('Request will not log, cause Bunyan loglevel is different!');
     }
+<<<<<<< HEAD
 >>>>>>> added Requested Changes
+=======
+>>>>>>> 0b5a636a4e3e56c2f813df9fb1670df13e2d4c95
     var useLogger = logger;
     app.use((0, _bunyanMiddleware2.default)({
       headerName: 'X-Request-Id',
@@ -62,11 +76,16 @@ exports.default = function (container, settings, existingApp) {
       obscureHeaders: [],
       propertyName: 'reqId'
     }));
+<<<<<<< HEAD
 >>>>>>> added correct handle of loglevel to bunyan-middleware
+=======
+>>>>>>> 0b5a636a4e3e56c2f813df9fb1670df13e2d4c95
   }
 
   app.use(_bodyParser2.default.json());
-  app.use(_bodyParser2.default.urlencoded({ extended: true }));
+  app.use(_bodyParser2.default.urlencoded({
+    extended: true
+  }));
   app.use(setCORSHeaders);
 
   (0, _RouteConfig2.default)(app, container, ['DeviceClaimsController',
