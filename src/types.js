@@ -2,6 +2,7 @@
 /* eslint-disable */
 
 import type { File } from 'express';
+import bunyan from 'bunyan';
 
 export type Webhook = {
   auth?: { password: string, username: string },
@@ -154,7 +155,7 @@ export type Settings = {
   },
   FIRMWARE_DIRECTORY: string,
   FIRMWARE_REPOSITORY_DIRECTORY: string,
-  LOG_LEVEL: string,
+  LOG_LEVEL: 'debug' | 'error' | 'fatal' | 'info' | 'warn' | 'trace',
   LOGIN_ROUTE: string,
   SERVER_KEY_FILENAME: string,
   SERVER_KEYS_DIRECTORY: string,
@@ -233,26 +234,6 @@ export interface IBaseDatabase {
 }
 
 export interface ILoggerCreate {
-  static createLogger(applicationName: string): ILogger;
-  static createModuleLogger(applicationModule: any): ILogger;
-}
-export interface ILogger {
-  debug (): boolean;
-  debug (additional: ?Object, line: string): void;
-  debug (line: string): void;
-  error (): boolean;
-  error (additional: ?Object, line: string): void;
-  error (line: string): void;
-  fatal (): boolean;
-  fatal (additional: ?Object, line: string): void;
-  fatal (line: string): void;
-  info (): boolean;
-  info (additional: ?Object, line: string): void;
-  info (line: string): void;
-  warn (): boolean;
-  warn (additional: ?Object, line: string): void;
-  warn (line: string): void;
-  trace (): boolean;
-  trace (additional: ?Object, line: string): void;
-  trace (line: string): void;
+  static createLogger(applicationName: string): bunyan.Logger,
+  static createModuleLogger(applicationModule: any): bunyan.Logger,
 }

@@ -7,12 +7,8 @@ import type {
   Middleware,
   NextFunction,
 } from 'express';
-import type {
-  Container,
-} from 'constitute';
-import type {
-  Settings,
-} from './types';
+import type { Container } from 'constitute';
+import type { Settings } from './types';
 
 import bodyParser from 'body-parser';
 import express from 'express';
@@ -48,28 +44,33 @@ export default (
     });
     return next();
   };
-  
+
   if (logger.debug()) {
-    app.use(bunyanMiddleware({
-      headerName: 'X-Request-Id',
-      level: 'debug',
-      logger,
-      logName: 'req_id',
-      obscureHeaders: [],
-      propertyName: 'reqId',
-    }));
+    app.use(
+      bunyanMiddleware({
+        headerName: 'X-Request-Id',
+        level: 'debug',
+        logger,
+        logName: 'req_id',
+        obscureHeaders: [],
+        propertyName: 'reqId',
+      }),
+    );
     logger.warn('Request logging enabled');
   }
 
   app.use(bodyParser.json());
-  app.use(bodyParser.urlencoded({
-    extended: true,
-  }));
+  app.use(
+    bodyParser.urlencoded({
+      extended: true,
+    }),
+  );
   app.use(setCORSHeaders);
 
   routeConfig(
     app,
-    container, [
+    container,
+    [
       'DeviceClaimsController',
       // to avoid routes collisions EventsController should be placed
       // before DevicesController

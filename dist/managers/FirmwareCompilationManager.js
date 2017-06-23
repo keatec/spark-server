@@ -165,7 +165,7 @@ FirmwareCompilationManager.compileSource = function () {
             errors = [];
 
             makeProcess.stderr.on('data', function (data) {
-              logger.error({ errordata: data }, 'Error from MakeProcess');
+              logger.error({ data: data }, 'Error from MakeProcess');
               errors.push('' + data);
             });
 
