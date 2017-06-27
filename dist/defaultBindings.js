@@ -58,6 +58,10 @@ var _DeviceManager = require('./managers/DeviceManager');
 
 var _DeviceManager2 = _interopRequireDefault(_DeviceManager);
 
+var _HeadLessManager = require('./managers/HeadLessManager');
+
+var _HeadLessManager2 = _interopRequireDefault(_HeadLessManager);
+
 var _WebhookManager = require('./managers/WebhookManager');
 
 var _WebhookManager2 = _interopRequireDefault(_WebhookManager);
@@ -145,8 +149,9 @@ exports.default = function (container, newSettings) {
   container.bindClass('UsersController', _UsersController2.default, ['UserRepository']);
   container.bindClass('WebhooksController', _WebhooksController2.default, ['WebhookManager']);
 
-  // managers
+  // managers 
   container.bindClass('DeviceManager', _DeviceManager2.default, ['DeviceAttributeRepository', 'DeviceFirmwareRepository', 'DeviceKeyRepository', 'PermissionManager', 'EventPublisher']);
+  container.bindClass('HeadLessManagers', _HeadLessManager2.default, ['EventPublisher', 'EVENT_PROVIDER']);
   container.bindClass('EventManager', _EventManager2.default, ['EventPublisher']);
   container.bindClass('WebhookManager', _WebhookManager2.default, ['EventPublisher', 'PermissionManager', 'WebhookLogger', 'WebhookRepository']);
 

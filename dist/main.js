@@ -92,6 +92,8 @@ var onServerStartListen = function onServerStartListen() {
   logger.info({ port: NODE_PORT }, 'express server started, with events');
 };
 
+var hManager = container.constitute('HeadLessManagers');
+
 var _settings$EXPRESS_SER = _settings2.default.EXPRESS_SERVER_CONFIG,
     privateKeyFilePath = _settings$EXPRESS_SER.SSL_PRIVATE_KEY_FILEPATH,
     certificateFilePath = _settings$EXPRESS_SER.SSL_CERTIFICATE_FILEPATH,
@@ -124,6 +126,6 @@ function (_ref) {
     return address.address;
   });
 }));
-addresses.forEach(function (aAddress) {
-  return logger.info({ address: aAddress }, 'Server IP address found');
+addresses.forEach(function (address) {
+  return logger.info({ address: address }, 'Server IP address found');
 });
