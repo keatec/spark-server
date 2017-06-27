@@ -43,6 +43,9 @@ const onServerStartListen = () => {
   logger.info({ port: NODE_PORT }, 'express server started, with events');
 };
 
+const hManager = container.constitute('HeadLessManagers');
+
+
 const {
   SSL_PRIVATE_KEY_FILEPATH: privateKeyFilePath,
   SSL_CERTIFICATE_FILEPATH: certificateFilePath,

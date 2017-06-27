@@ -16,6 +16,7 @@ import UsersController from './controllers/UsersController';
 import WebhooksController from './controllers/WebhooksController';
 import WebhookLogger from './lib/WebhookLogger';
 import DeviceManager from './managers/DeviceManager';
+import HeadLessManagers from './managers/HeadLessManager';
 import WebhookManager from './managers/WebhookManager';
 import EventManager from './managers/EventManager';
 import PermissionManager from './managers/PermissionManager';
@@ -88,13 +89,17 @@ export default (container: Container, newSettings: Settings) => {
     'WebhookManager',
   ]);
 
-  // managers
+  // managers 
   container.bindClass('DeviceManager', DeviceManager, [
     'DeviceAttributeRepository',
     'DeviceFirmwareRepository',
     'DeviceKeyRepository',
     'PermissionManager',
     'EventPublisher',
+  ]);
+  container.bindClass('HeadLessManagers', HeadLessManagers, [
+    'EventPublisher',
+    'EVENT_PROVIDER',
   ]);
   container.bindClass('EventManager', EventManager, ['EventPublisher']);
   container.bindClass('WebhookManager', WebhookManager, [
