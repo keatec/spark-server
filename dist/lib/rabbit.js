@@ -24,7 +24,7 @@ var mainchannel = void 0;
 var queues = {};
 var receivers = {};
 var newReceivers = void 0;
-var rabbitIncoming = process.env.HOSTNAME !== undefined ? process.env.HOSTNAME : process.env.COMPUTERNAME;
+var rabbitIncoming = 'INCOMING_' + (process.env.HOSTNAME !== undefined ? process.env.HOSTNAME : process.env.COMPUTERNAME);
 
 console.log(process.env);
 
@@ -64,7 +64,7 @@ function processElement(qname, data) {
 }
 
 function registerReceiver(name, callback) {
-  logger.info({ name: '' + name }, 'Register Recevier ' + name);
+  logger.info({ name: name }, 'Register Recevier ' + name);
   mainchannel.assertQueue(name, {
     arguments: {
       'x-message-ttl': 3 * 60 * 1000
@@ -120,7 +120,7 @@ setInterval(function () {
   if (newReceivers !== undefined) {
     logger.info('Registering Receivers');
     receivers = newReceivers;
-    (0, _keys2.default)(receivers).forEach(function (index, key) {
+    (0, _keys2.default)(receivers).forEach(function (key) {
       registerReceiver(key, receivers[key]);
     });
     registerReceiver(rabbitIncoming, function (answer) {

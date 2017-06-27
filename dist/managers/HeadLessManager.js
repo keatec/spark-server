@@ -94,7 +94,9 @@ var HeadLessManagers = function HeadLessManagers(eventPublisher, eventProvider) 
               switch (_context2.prev = _context2.next) {
                 case 0:
                   _context2.next = 2;
-                  return _this.run('GET_DEVICE_ATTRIBUTES', { deviceID: event.deviceID });
+                  return _this.run('GET_DEVICE_ATTRIBUTES', {
+                    deviceID: event.deviceID
+                  });
 
                 case 2:
                   attr = _context2.sent;
@@ -112,16 +114,21 @@ var HeadLessManagers = function HeadLessManagers(eventPublisher, eventProvider) 
       }
       if (event.data === 'offline') {
         devices[event.deviceID] = false;
-        _rabbit2.default.send('DEVICE_STATE', { offline: { deviceID: event.deviceID } });
+        _rabbit2.default.send('DEVICE_STATE', {
+          offline: { deviceID: event.deviceID }
+        });
       }
     }
   });
   _rabbit2.default.registerReceiver({
-    'DEVICE_ACTION': function DEVICE_ACTION(eventString, ack) {
+    DEVICE_ACTION: function DEVICE_ACTION(eventString, ack) {
       var event = JSON.parse(eventString);
       _this.run(event.action, event.context).then(function (answer) {
         logger.info({ ans: answer, ev: event }, 'Answer found for action');
         ack();
+        if (event.answerTo !== undefined) {
+          _rabbit2.default.send(event.answerTo, { answer: answer, answerID: event.answerID });
+        }
       }).catch(function (err) {
         logger.info({ err: err, ev: event }, 'Error found for action');
         ack();
