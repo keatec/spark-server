@@ -186,12 +186,16 @@ var NeDb = function (_BaseMongoDb) {
                         switch (_context5.prev = _context5.next) {
                           case 0:
                             _context5.next = 2;
-                            return (0, _promisify.promisify)(collection, 'update', query, updateQuery, { returnUpdatedDocs: true, upsert: true });
+                            return (0, _promisify.promisify)(collection, 'update', query, updateQuery, {
+                              returnUpdatedDocs: true,
+                              upsert: true
+                            });
 
                           case 2:
                             _ref7 = _context5.sent;
                             _ref8 = (0, _slicedToArray3.default)(_ref7, 2);
                             count = _ref8[0];
+                            // eslint-disable-line no-unused-vars
                             resultItem = _ref8[1];
                             return _context5.abrupt('return', _this.__translateResultItem(resultItem));
 

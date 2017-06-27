@@ -12,6 +12,8 @@ import allowUpload from '../decorators/allowUpload';
 import httpVerb from '../decorators/httpVerb';
 import route from '../decorators/route';
 import deviceToAPI from '../lib/deviceToAPI';
+import Logger from '../lib/logger';
+const logger = Logger.createModuleLogger(module);
 
 type CompileConfig = {
   platform_id?: string,
@@ -74,11 +76,16 @@ class DevicesController extends Controller {
   async getDevices(): Promise<*> {
     try {
       const devices = await this._deviceManager.getAll();
-      return this.ok(devices.map((device: Device): DeviceAPIType =>
-        deviceToAPI(device)),
+      return this.ok(
+        devices.map((device: Device): DeviceAPIType => deviceToAPI(device)),
       );
     } catch (error) {
       // I wish we could return no devices found but meh :/
+      // at least we should issue a warning
+      logger.warn(
+        { err: error },
+        'get devices throws error, possibly no devices found?',
+      );
       return this.ok([]);
     }
   }
@@ -92,10 +99,7 @@ class DevicesController extends Controller {
 
   @httpVerb('get')
   @route('/v1/devices/:deviceID/:varName/')
-  async getVariableValue(
-    deviceID: string,
-    varName: string,
-  ): Promise<*> {
+  async getVariableValue(deviceID: string, varName: string): Promise<*> {
     try {
       const varValue = await this._deviceManager.getVariableValue(
         deviceID,
@@ -164,17 +168,13 @@ class DevicesController extends Controller {
       throw new Error('Firmware file not provided');
     }
 
-    const file =
-      this.request.files &&
-      (this.request.files: any).file[0];
+    const file = this.request.files && (this.request.files: any).file[0];
 
     if (
-      file && (
-        file.originalname === 'binary' || file.originalname.endsWith('.bin')
-      )
+      file &&
+      (file.originalname === 'binary' || file.originalname.endsWith('.bin'))
     ) {
-      const flashResult = await this._deviceManager
-        .flashBinary(deviceID, file);
+      const flashResult = await this._deviceManager.flashBinary(deviceID, file);
 
       return this.ok({ id: deviceID, status: flashResult.status });
     }

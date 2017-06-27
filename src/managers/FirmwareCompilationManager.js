@@ -4,29 +4,25 @@ import type { File } from 'express';
 
 import crypto from 'crypto';
 import fs from 'fs';
-import logger from '../lib/logger';
 import path from 'path';
 import mkdirp from 'mkdirp';
 import rmfr from 'rmfr';
 import { spawn } from 'child_process';
 import { knownPlatforms } from 'spark-protocol';
 import settings from '../settings';
+import Logger from '../lib/logger';
+const logger = Logger.createModuleLogger(module);
 
-const IS_COMPILATION_ENABLED =
-  fs.existsSync(settings.FIRMWARE_REPOSITORY_DIRECTORY);
+const IS_COMPILATION_ENABLED = fs.existsSync(
+  settings.FIRMWARE_REPOSITORY_DIRECTORY,
+);
 
 const USER_APP_PATH = path.join(
   settings.FIRMWARE_REPOSITORY_DIRECTORY,
   'user/applications',
 );
-const BIN_PATH = path.join(
-  settings.BUILD_DIRECTORY,
-  'bin',
-);
-const MAKE_PATH = path.join(
-  settings.FIRMWARE_REPOSITORY_DIRECTORY,
-  'main',
-);
+const BIN_PATH = path.join(settings.BUILD_DIRECTORY, 'bin');
+const MAKE_PATH = path.join(settings.FIRMWARE_REPOSITORY_DIRECTORY, 'main');
 
 type CompilationResponse = {
   binary_id: string,
@@ -37,10 +33,8 @@ type CompilationResponse = {
 
 const FILE_NAME_BY_KEY = new Map();
 
-const getKey = (): string => crypto
-  .randomBytes(24)
-  .toString('hex')
-  .substring(0, 24);
+const getKey = (): string =>
+  crypto.randomBytes(24).toString('hex').substring(0, 24);
 
 const getUniqueKey = (): string => {
   let key = getKey();
@@ -64,7 +58,8 @@ class FirmwareCompilationManager {
       return null;
     }
 
-    const binFileName = fs.readdirSync(binaryPath)
+    const binFileName = fs
+      .readdirSync(binaryPath)
       .find((file: string): boolean => file.endsWith('.bin'));
 
     if (!binFileName) {
@@ -88,8 +83,7 @@ class FirmwareCompilationManager {
     }
 
     platformName = platformName.toLowerCase();
-    const appFolder =
-      `${platformName}_firmware_${(new Date()).getTime()}`.toLowerCase();
+    const appFolder = `${platformName}_firmware_${new Date().getTime()}`.toLowerCase();
     const appPath = path.join(USER_APP_PATH, appFolder);
     mkdirp.sync(appPath);
 
@@ -124,7 +118,7 @@ class FirmwareCompilationManager {
 
     const errors = [];
     makeProcess.stderr.on('data', (data: string) => {
-      logger.error(`${data}`);
+      logger.error({ data }, 'Error from MakeProcess');
       errors.push(`${data}`);
     });
 
@@ -154,10 +148,7 @@ class FirmwareCompilationManager {
       sizeInfo,
     };
 
-    FirmwareCompilationManager.addFirmwareCleanupTask(
-      appPath,
-      config,
-    );
+    FirmwareCompilationManager.addFirmwareCleanupTask(appPath, config);
 
     return config;
   };
@@ -173,11 +164,8 @@ class FirmwareCompilationManager {
     const currentDate = new Date();
     const difference =
       new Date(config.expires_at).getTime() - currentDate.getTime();
-    setTimeout(
-      (): void => rmfr(appFolderPath),
-      difference,
-    );
-  }
+    setTimeout((): void => rmfr(appFolderPath), difference);
+  };
 }
 
 if (IS_COMPILATION_ENABLED) {
@@ -208,10 +196,7 @@ if (IS_COMPILATION_ENABLED) {
       rmfr(configPath);
       rmfr(path.join(BIN_PATH, config.binary_id));
     } else {
-      FirmwareCompilationManager.addFirmwareCleanupTask(
-        appFolder,
-        config,
-      );
+      FirmwareCompilationManager.addFirmwareCleanupTask(appFolder, config);
     }
   });
 }

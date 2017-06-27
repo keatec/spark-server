@@ -86,17 +86,7 @@ function _applyDecoratedDescriptor(target, property, decorators, descriptor, con
   return desc;
 }
 
-var ProductsController = (_dec = (0, _httpVerb2.default)('get'), _dec2 = (0, _route2.default)('/v1/products'
-// eslint-disable-next-line class-methods-use-this
-), _dec3 = (0, _httpVerb2.default)('post'), _dec4 = (0, _route2.default)('/v1/products'
-// eslint-disable-next-line class-methods-use-this
-), _dec5 = (0, _httpVerb2.default)('get'), _dec6 = (0, _route2.default)('/v1/products/:productIdOrSlug'), _dec7 = (0, _httpVerb2.default)('post'), _dec8 = (0, _route2.default)('/v1/products/:productIdOrSlug/device_claims'
-// eslint-disable-next-line class-methods-use-this
-), _dec9 = (0, _httpVerb2.default)('get'), _dec10 = (0, _route2.default)('/v1/products/:productIdOrSlug/firmware'), _dec11 = (0, _httpVerb2.default)('post'), _dec12 = (0, _route2.default)('/v1/products/:productIdOrSlug/firmware'), _dec13 = (0, _httpVerb2.default)('get'), _dec14 = (0, _route2.default)('/v1/products/:productIdOrSlug/devices'), _dec15 = (0, _httpVerb2.default)('put'), _dec16 = (0, _route2.default)('/v1/products/:productIdOrSlug/devices/:deviceID'), _dec17 = (0, _httpVerb2.default)('delete'), _dec18 = (0, _route2.default)('/v1/products/:productIdOrSlug/devices/:deviceID'
-// eslint-disable-next-line class-methods-use-this
-), _dec19 = (0, _httpVerb2.default)('get'), _dec20 = (0, _route2.default)('/v1/products/:productIdOrSlug/config'), _dec21 = (0, _httpVerb2.default)('get'), _dec22 = (0, _route2.default)('/v1/products/:productIdOrSlug/events/:eventPrefix?*'), _dec23 = (0, _httpVerb2.default)('delete'), _dec24 = (0, _route2.default)('/v1/products/:productIdOrSlug/team/:username'
-// eslint-disable-next-line class-methods-use-this
-), (_class = function (_Controller) {
+var ProductsController = (_dec = (0, _httpVerb2.default)('get'), _dec2 = (0, _route2.default)('/v1/products'), _dec3 = (0, _httpVerb2.default)('post'), _dec4 = (0, _route2.default)('/v1/products'), _dec5 = (0, _httpVerb2.default)('get'), _dec6 = (0, _route2.default)('/v1/products/:productIdOrSlug'), _dec7 = (0, _httpVerb2.default)('post'), _dec8 = (0, _route2.default)('/v1/products/:productIdOrSlug/device_claims'), _dec9 = (0, _httpVerb2.default)('get'), _dec10 = (0, _route2.default)('/v1/products/:productIdOrSlug/firmware'), _dec11 = (0, _httpVerb2.default)('post'), _dec12 = (0, _route2.default)('/v1/products/:productIdOrSlug/firmware'), _dec13 = (0, _httpVerb2.default)('get'), _dec14 = (0, _route2.default)('/v1/products/:productIdOrSlug/devices'), _dec15 = (0, _httpVerb2.default)('put'), _dec16 = (0, _route2.default)('/v1/products/:productIdOrSlug/devices/:deviceID'), _dec17 = (0, _httpVerb2.default)('delete'), _dec18 = (0, _route2.default)('/v1/products/:productIdOrSlug/devices/:deviceID'), _dec19 = (0, _httpVerb2.default)('get'), _dec20 = (0, _route2.default)('/v1/products/:productIdOrSlug/config'), _dec21 = (0, _httpVerb2.default)('get'), _dec22 = (0, _route2.default)('/v1/products/:productIdOrSlug/events/:eventPrefix?*'), _dec23 = (0, _httpVerb2.default)('delete'), _dec24 = (0, _route2.default)('/v1/products/:productIdOrSlug/team/:username'), (_class = function (_Controller) {
   (0, _inherits3.default)(ProductsController, _Controller);
 
   function ProductsController(deviceManager) {

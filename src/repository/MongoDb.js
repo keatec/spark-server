@@ -4,8 +4,9 @@ import type { IBaseDatabase } from '../types';
 
 import EventEmitter from 'events';
 import BaseMongoDb from './BaseMongoDb';
-import Logger from '../lib/logger';
 import { MongoClient } from 'mongodb';
+import Logger from '../lib/logger';
+const logger = Logger.createModuleLogger(module);
 
 const DB_READY_EVENT = 'dbReady';
 
@@ -19,70 +20,62 @@ class MongoDb extends BaseMongoDb implements IBaseDatabase {
     (async (): Promise<void> => await this._init(url, options))();
   }
 
-  insertOne = async (
-    collectionName: string,
-    entity: Object,
-  ): Promise<*> => await this.__runForCollection(
-    collectionName,
-    async (collection: Object): Promise<*> => {
-      const insertResult = await collection.insertOne(entity);
-      return this.__translateResultItem(insertResult.ops[0]);
-    },
-  );
+  insertOne = async (collectionName: string, entity: Object): Promise<*> =>
+    await this.__runForCollection(
+      collectionName,
+      async (collection: Object): Promise<*> => {
+        const insertResult = await collection.insertOne(entity);
+        return this.__translateResultItem(insertResult.ops[0]);
+      },
+    );
 
-  find = async (
-    collectionName: string,
-    query: Object,
-  ): Promise<*> => await this.__runForCollection(
-    collectionName,
-    async (collection: Object): Promise<*> => {
-      const resultItems = await collection.find(
-        this.__translateQuery(query),
-        { timeout: false },
-      ).toArray();
+  find = async (collectionName: string, query: Object): Promise<*> =>
+    await this.__runForCollection(
+      collectionName,
+      async (collection: Object): Promise<*> => {
+        const resultItems = await collection
+          .find(this.__translateQuery(query), { timeout: false })
+          .toArray();
 
-      return resultItems.map(this.__translateResultItem);
-    },
-  );
+        return resultItems.map(this.__translateResultItem);
+      },
+    );
 
   findAndModify = async (
     collectionName: string,
     query: Object,
     updateQuery: Object,
-  ): Promise<*> => await this.__runForCollection(
-    collectionName,
-    async (collection: Object): Promise<*> => {
-      const modifyResult = await collection.findAndModify(
-        this.__translateQuery(query),
-        null,
-        this.__translateQuery(updateQuery),
-        { new: true, upsert: true },
-      );
-      return this.__translateResultItem(modifyResult.value);
-    },
-  );
+  ): Promise<*> =>
+    await this.__runForCollection(
+      collectionName,
+      async (collection: Object): Promise<*> => {
+        const modifyResult = await collection.findAndModify(
+          this.__translateQuery(query),
+          null,
+          this.__translateQuery(updateQuery),
+          { new: true, upsert: true },
+        );
+        return this.__translateResultItem(modifyResult.value);
+      },
+    );
 
-  findOne = async (
-    collectionName: string,
-    query: Object,
-  ): Promise<*> => await this.__runForCollection(
-    collectionName,
-    async (collection: Object): Promise<*> => {
-      const resultItem = await collection.findOne(
-        this.__translateQuery(query),
-      );
-      return this.__translateResultItem(resultItem);
-    },
-  );
+  findOne = async (collectionName: string, query: Object): Promise<*> =>
+    await this.__runForCollection(
+      collectionName,
+      async (collection: Object): Promise<*> => {
+        const resultItem = await collection.findOne(
+          this.__translateQuery(query),
+        );
+        return this.__translateResultItem(resultItem);
+      },
+    );
 
-  remove = async (
-    collectionName: string,
-    query: Object,
-  ): Promise<*> => await this.__runForCollection(
-    collectionName,
-    async (collection: Object): Promise<*> =>
-      await collection.remove(this.__translateQuery(query)),
-  );
+  remove = async (collectionName: string, query: Object): Promise<*> =>
+    await this.__runForCollection(
+      collectionName,
+      async (collection: Object): Promise<*> =>
+        await collection.remove(this.__translateQuery(query)),
+    );
 
   __runForCollection = async (
     collectionName: string,
@@ -95,26 +88,22 @@ class MongoDb extends BaseMongoDb implements IBaseDatabase {
     }
     return callback(
       this._database.collection(collectionName),
-    ).catch((error: Error): void => Logger.error(error));
+    ).catch((error: Error): void =>
+      logger.error({ err: error }, 'Run for Collection'),
+    );
   };
 
   _init = async (url: string, options: Object): Promise<void> => {
     const database = await MongoClient.connect(url, options);
 
-    database.on(
-      'error',
-      (error: Error): void =>
-        Logger.error('DB connection Error: ', error),
+    database.on('error', (error: Error): void =>
+      logger.error({ err: error }, 'DB connection Error: '),
     );
 
-    database.on(
-      'open',
-      (): void => Logger.log('DB connected'),
-    );
+    database.on('open', (): void => logger.info('DB connected'));
 
-    database.on(
-      'close',
-      (str: string): void => Logger.log('DB disconnected: ', str),
+    database.on('close', (str: string): void =>
+      logger.info({ info: str }, 'DB disconnected: '),
     );
 
     this._database = database;
@@ -127,10 +116,7 @@ class MongoDb extends BaseMongoDb implements IBaseDatabase {
     }
 
     return new Promise((resolve: () => void) => {
-      this._statusEventEmitter.once(
-        DB_READY_EVENT,
-        (): void => resolve(),
-      );
+      this._statusEventEmitter.once(DB_READY_EVENT, (): void => resolve());
     });
   };
 }
