@@ -122,6 +122,9 @@ var HeadLessManagers = function HeadLessManagers(eventPublisher, eventProvider) 
       _this.run(event.action, event.context).then(function (answer) {
         logger.info({ ans: answer, ev: event }, 'Answer found for action');
         ack();
+        if (event.answerTo !== undefined) {
+          _rabbit2.default.send(event.answerTo, { answer: answer, answerID: event.answerID });
+        }
       }).catch(function (err) {
         logger.info({ err: err, ev: event }, 'Error found for action');
         ack();

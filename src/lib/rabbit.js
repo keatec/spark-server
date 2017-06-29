@@ -2,15 +2,13 @@
 
 import Logger from '../lib/logger';
 
-
+import uuid from 'uuid';
 let rabbitConnection;
 let mainchannel;
 let queues = {};
 let receivers = {};
 let newReceivers;
 const rabbitIncoming = `INCOMING_${process.env.HOSTNAME !== undefined ? process.env.HOSTNAME : process.env.COMPUTERNAME}`;
-
-console.log(process.env);
 
 const logger = Logger.createModuleLogger(module);
 
@@ -25,6 +23,11 @@ logger.info({
 
 const pubQ = []; // Publish Queue, to be processed
 const amqp = require('amqplib');
+
+const awaitingAnswer = {
+
+};
+
 
 
 function processElement(qname: string, data: any ) {
@@ -50,8 +53,8 @@ function processElement(qname: string, data: any ) {
 
 }
 
-function registerReceiver (name: string, callback: (ev: any) => void) {
-  logger.info({ name },'Register Recevier '+name);
+function registerReceiver (name: string, callback: (data: string, ack: () => void ) => void) {
+  logger.info({ name },`Register Recevier ${name}`);
   mainchannel.assertQueue(name, {
     arguments: {
       'x-message-ttl': 3 * 60 * 1000
@@ -112,8 +115,17 @@ setInterval(() => {
     Object.keys(receivers).forEach((key: string) => {
         registerReceiver(key, receivers[key]);
     });
-    registerReceiver(rabbitIncoming, (answer: any) => {
-        logger.info({ ans: answer }, 'Got Incoming');
+    registerReceiver(rabbitIncoming, (data: string) => {
+        logger.debug({ data }, 'Got Incoming');
+        const answer = JSON.parse(data);
+        const answerID = answer.answerID;
+        if (awaitingAnswer[answerID] !== undefined) {
+          const res = awaitingAnswer[answerID];
+          delete awaitingAnswer[answerID];
+          res.resolve(answer.answer);
+        } else {
+          logger.warn({ answerID }, 'Received Answer, but answer cant be found');
+        }
     });
     newReceivers = undefined;
   }
@@ -124,7 +136,6 @@ const afterConnect = () => {
   // Start Publisher
   rabbitConnection.createChannel()
     .then((ch: any) => {
-      logger.info({ ch }, 'Channel Created ...');
       mainchannel = ch;
       mainchannel.on('error',  (err: Error) => {
         logger.error({
@@ -197,12 +208,47 @@ start();
 
 logger.info('Started');
 
-export default {
+
+function maintenance () {
+    const n = Date.now();
+    Object.keys(awaitingAnswer).forEach((key: string) => {
+      logger.debug({ key },'check');
+      if (awaitingAnswer[key].timeout < n) {
+        awaitingAnswer[key].reject('Timeout');
+        delete awaitingAnswer[key];
+        logger.warn({ key },'action timeout');
+      }
+    });
+};
+setInterval(maintenance,5000).unref();
+
+
+
+const userabbit = {
   registerReceiver (obj: any) {
     newReceivers = obj;
   },
   send (name: string, data: any) {
     pubQ.push([name, data]);
   },
+  sendAction (action: string, data: any): void {
+    return new Promise (( resolve: Promise.callback , reject: Promise.reject ) => {
+      const answerID = uuid.v4();
+      awaitingAnswer[answerID] = {
+          reject,
+          resolve,
+          timeout: Date.now() + 5000,
+      }; 
+      userabbit.send('DEVICE_ACTION', {
+        action,
+        answerID,
+        answerTo: rabbitIncoming,
+        context: data
+      });  
+    });
+  },
+
 };
+
+export default userabbit;
 
