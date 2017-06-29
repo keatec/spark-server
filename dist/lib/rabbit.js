@@ -4,6 +4,10 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _promise = require('babel-runtime/core-js/promise');
+
+var _promise2 = _interopRequireDefault(_promise);
+
 var _keys = require('babel-runtime/core-js/object/keys');
 
 var _keys2 = _interopRequireDefault(_keys);
@@ -16,17 +20,18 @@ var _logger = require('../lib/logger');
 
 var _logger2 = _interopRequireDefault(_logger);
 
+var _uuid = require('uuid');
+
+var _uuid2 = _interopRequireDefault(_uuid);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var rabbitConnection = void 0;
-
 var mainchannel = void 0;
 var queues = {};
 var receivers = {};
 var newReceivers = void 0;
 var rabbitIncoming = 'INCOMING_' + (process.env.HOSTNAME !== undefined ? process.env.HOSTNAME : process.env.COMPUTERNAME);
-
-console.log(process.env);
 
 var logger = _logger2.default.createModuleLogger(module);
 
@@ -40,6 +45,8 @@ logger.info({
 
 var pubQ = []; // Publish Queue, to be processed
 var amqp = require('amqplib');
+
+var awaitingAnswer = {};
 
 function processElement(qname, data) {
   if (queues[qname] === undefined) {
@@ -123,8 +130,17 @@ setInterval(function () {
     (0, _keys2.default)(receivers).forEach(function (key) {
       registerReceiver(key, receivers[key]);
     });
-    registerReceiver(rabbitIncoming, function (answer) {
-      logger.info({ ans: answer }, 'Got Incoming');
+    registerReceiver(rabbitIncoming, function (data) {
+      logger.debug({ data: data }, 'Got Incoming');
+      var answer = JSON.parse(data);
+      var answerID = answer.answerID;
+      if (awaitingAnswer[answerID] !== undefined) {
+        var res = awaitingAnswer[answerID];
+        delete awaitingAnswer[answerID];
+        res.resolve(answer.answer);
+      } else {
+        logger.warn({ answerID: answerID }, 'Received Answer, but answer cant be found');
+      }
     });
     newReceivers = undefined;
   }
@@ -134,7 +150,6 @@ var afterConnect = function afterConnect() {
   logger.info('Was Connected');
   // Start Publisher
   rabbitConnection.createChannel().then(function (ch) {
-    logger.info({ ch: ch }, 'Channel Created ...');
     mainchannel = ch;
     mainchannel.on('error', function (err) {
       logger.error({
@@ -204,11 +219,42 @@ start();
 
 logger.info('Started');
 
-exports.default = {
+function maintenance() {
+  var n = Date.now();
+  (0, _keys2.default)(awaitingAnswer).forEach(function (key) {
+    logger.debug({ key: key }, 'check');
+    if (awaitingAnswer[key].timeout < n) {
+      awaitingAnswer[key].reject('Timeout');
+      delete awaitingAnswer[key];
+      logger.warn({ key: key }, 'action timeout');
+    }
+  });
+};
+setInterval(maintenance, 5000).unref();
+
+var userabbit = {
   registerReceiver: function registerReceiver(obj) {
     newReceivers = obj;
   },
   send: function send(name, data) {
     pubQ.push([name, data]);
+  },
+  sendAction: function sendAction(action, data) {
+    return new _promise2.default(function (resolve, reject) {
+      var answerID = _uuid2.default.v4();
+      awaitingAnswer[answerID] = {
+        reject: reject,
+        resolve: resolve,
+        timeout: Date.now() + 5000
+      };
+      userabbit.send('DEVICE_ACTION', {
+        action: action,
+        answerID: answerID,
+        answerTo: rabbitIncoming,
+        context: data
+      });
+    });
   }
 };
+
+exports.default = userabbit;

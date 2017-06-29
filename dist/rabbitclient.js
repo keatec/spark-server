@@ -13,11 +13,16 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var logger = _logger2.default.createModuleLogger(module);
 
 _rabbit2.default.registerReceiver({
-    'DEVICE_STATE': function DEVICE_STATE(ev) {
-        logger.info({ ev: ev }, 'State');
+    'DEVICE_STATE': function DEVICE_STATE(data) {
+        logger.info({ data: data }, 'State');
     },
-    'EV_BEAT': function EV_BEAT(ev) {
-        logger.info({ ev: ev, dev: ev.deviceID }, 'Beat');
-        _rabbit2.default.send('DEVICE_ACTION', { action: 'GET_DEVICE_ATTRIBUTES', context: { deviceID: ev.deviceID } });
+    'EV_BEAT': function EV_BEAT(data) {
+        var ev = JSON.parse(data);
+        logger.info({ deviceID: ev.deviceID }, 'Beat');
+        _rabbit2.default.sendAction('GET_DEVICE_ATTRIBUTES', { deviceID: ev.deviceID }).then(function (answer) {
+            return logger.info({ answer: answer }, 'Got Answer');
+        }).catch(function (err) {
+            return logger.error({ err: err }, 'Error');
+        });
     }
 });

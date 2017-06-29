@@ -5,14 +5,15 @@ import Logger from './lib/logger';
 const logger = Logger.createModuleLogger(module);
 
 rabbit.registerReceiver({
-  DEVICE_STATE: (ev: Event) => {
-    logger.info({ ev }, 'State');
-  },
-  EV_BEAT: (ev: Event) => {
-    logger.info({ dev: ev.deviceID, ev }, 'Beat');
-    rabbit.send('DEVICE_ACTION', {
-      action: 'GET_DEVICE_ATTRIBUTES',
-      context: { deviceID: ev.deviceID },
-    });
-  },
+    'DEVICE_STATE': (data: string) => {
+        logger.info({ data }, 'State');
+    },
+    'EV_BEAT': (data: string) => {
+        const ev = JSON.parse(data);
+        logger.info({ deviceID : ev.deviceID }, 'Beat');
+        rabbit.sendAction('GET_DEVICE_ATTRIBUTES', { deviceID: ev.deviceID })
+            .then ((answer: any): void => logger.info({ answer }, 'Got Answer'))
+            .catch((err: Error): void => logger.error({ err }, 'Error'));
+    }
 });
+
