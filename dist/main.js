@@ -92,7 +92,7 @@ var onServerStartListen = function onServerStartListen() {
   logger.info({ port: NODE_PORT }, 'express server started, with events');
 };
 
-var hManager = container.constitute('HeadLessManagers');
+container.constitute('HeadLessManagers');
 
 var _settings$EXPRESS_SER = _settings2.default.EXPRESS_SERVER_CONFIG,
     privateKeyFilePath = _settings$EXPRESS_SER.SSL_PRIVATE_KEY_FILEPATH,

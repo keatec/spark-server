@@ -64,6 +64,8 @@
     ]
   },
   "pre-commit": [
+    "lint-staged",
+    "test"
   ],
   "ava": {
     "verbose": true,

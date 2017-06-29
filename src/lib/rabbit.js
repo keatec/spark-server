@@ -4,28 +4,18 @@ import Logger from '../lib/logger';
 
 import uuid from 'uuid';
 let rabbitConnection;
-let mainchannel: any;
+let mainchannel;
 let queues = {};
 let receivers = {};
-let newReceivers: ICallbackArray;
-
+let newReceivers;
 const rabbitIncoming = `INCOMING_${process.env.HOSTNAME !== undefined
-  ? (process.env.HOSTNAME: any)
-  : (process.env.COMPUTERNAME: any)}`;
+  ? process.env.HOSTNAME
+  : process.env.COMPUTERNAME}`;
 
 const logger = Logger.createModuleLogger(module);
 
-const rabbitHost =
-  (process.env.RABBIT_PORT_5672_TCP_ADDR: any) || '172.22.17.61';
-const rabbitPort = (process.env.RABBIT_PORT_5672_TCP_PORT: any) || 9998;
-
-export type IQueueEvent = {
-  [name: string]: any,
-};
-export type IQueueCallback = (message: string, ack: () => void) => void;
-export type ICallbackArray = {
-  [name: string]: (ev: any) => void,
-};
+const rabbitHost = process.env.RABBIT_PORT_5672_TCP_ADDR || '172.22.17.61';
+const rabbitPort = process.env.RABBIT_PORT_5672_TCP_PORT || 9998;
 
 logger.info(
   {
@@ -38,13 +28,9 @@ logger.info(
 const pubQ = []; // Publish Queue, to be processed
 const amqp = require('amqplib');
 
-const awaitingAnswer = {
+const awaitingAnswer = {};
 
-};
-
-
-
-function processElement(qname: string, data: any ) {
+function processElement(qname: string, data: any) {
   if (queues[qname] === undefined) {
     mainchannel
       .assertQueue(qname, {
@@ -74,24 +60,41 @@ function processElement(qname: string, data: any ) {
   }
 }
 
-function registerReceiver (name: string, callback: (data: string, ack: () => void ) => void) {
-  logger.info({ name },`Register Recevier ${name}`);
-  mainchannel.assertQueue(name, {
-    arguments: {
-      'x-message-ttl': 3 * 60 * 1000
-    },
-    durable: false,
-  }).then((info: any) => {
-    logger.info({
-      info,
-      name,
-    }, 'Registered ');
-    mainchannel.consume(info.queue, (msg: any) => {
-        try {
-          logger.info({
-            q: info.queue
-          }, 'Got Message');
-          if (callback(msg.content.toString(), () => {
+function registerReceiver(
+  name: string,
+  callback: (data: string, ack: () => void) => void,
+) {
+  logger.info({ name }, `Register Recevier ${name}`);
+  mainchannel
+    .assertQueue(name, {
+      arguments: {
+        'x-message-ttl': 3 * 60 * 1000,
+      },
+      durable: false,
+    })
+    .then((info: any) => {
+      logger.info(
+        {
+          info,
+          name,
+        },
+        'Registered ',
+      );
+      mainchannel.consume(
+        info.queue,
+        (msg: any) => {
+          try {
+            logger.info(
+              {
+                q: info.queue,
+              },
+              'Got Message',
+            );
+            if (
+              callback(msg.content.toString(), () => {
+                mainchannel.ack(msg);
+              }) !== false
+            ) {
               mainchannel.ack(msg);
             }
           } catch (e) {
@@ -122,7 +125,7 @@ setInterval(() => {
   if (pubQ.length > 0) {
     let b;
     let cc = 0;
-    while (cc > 0) {
+    while (true) {
       // eslint-disable-line no-constant-condition
       cc += 1;
       if (cc > 10) break;
@@ -138,16 +141,16 @@ setInterval(() => {
       registerReceiver(key, receivers[key]);
     });
     registerReceiver(rabbitIncoming, (data: string) => {
-        logger.debug({ data }, 'Got Incoming');
-        const answer = JSON.parse(data);
-        const answerID = answer.answerID;
-        if (awaitingAnswer[answerID] !== undefined) {
-          const res = awaitingAnswer[answerID];
-          delete awaitingAnswer[answerID];
-          res.resolve(answer.answer);
-        } else {
-          logger.warn({ answerID }, 'Received Answer, but answer cant be found');
-        }
+      logger.debug({ data }, 'Got Incoming');
+      const answer = JSON.parse(data);
+      const answerID = answer.answerID;
+      if (awaitingAnswer[answerID] !== undefined) {
+        const res = awaitingAnswer[answerID];
+        delete awaitingAnswer[answerID];
+        res.resolve(answer.answer);
+      } else {
+        logger.warn({ answerID }, 'Received Answer, but answer cant be found');
+      }
     });
     newReceivers = undefined;
   }
@@ -250,47 +253,42 @@ start();
 
 logger.info('Started');
 
-
-function maintenance () {
-    const n = Date.now();
-    Object.keys(awaitingAnswer).forEach((key: string) => {
-      logger.debug({ key },'check');
-      if (awaitingAnswer[key].timeout < n) {
-        awaitingAnswer[key].reject('Timeout');
-        delete awaitingAnswer[key];
-        logger.warn({ key },'action timeout');
-      }
-    });
-};
-setInterval(maintenance,5000).unref();
-
-
+function maintenance() {
+  const n = Date.now();
+  Object.keys(awaitingAnswer).forEach((key: string) => {
+    logger.debug({ key }, 'check');
+    if (awaitingAnswer[key].timeout < n) {
+      awaitingAnswer[key].reject('Timeout');
+      delete awaitingAnswer[key];
+      logger.warn({ key }, 'action timeout');
+    }
+  });
+}
+setInterval(maintenance, 5000).unref();
 
 const userabbit = {
-  registerReceiver (obj: any) {
+  registerReceiver(obj: any) {
     newReceivers = obj;
-  }
-  static send(name: string, data: any) {
+  },
+  send(name: string, data: any) {
     pubQ.push([name, data]);
   },
-  sendAction (action: string, data: any): void {
-    return new Promise (( resolve: Promise.callback , reject: Promise.reject ) => {
+  sendAction(action: string, data: any): void {
+    return new Promise((resolve: Promise.callback, reject: Promise.reject) => {
       const answerID = uuid.v4();
       awaitingAnswer[answerID] = {
-          reject,
-          resolve,
-          timeout: Date.now() + 5000,
-      }; 
+        reject,
+        resolve,
+        timeout: Date.now() + 5000,
+      };
       userabbit.send('DEVICE_ACTION', {
         action,
         answerID,
         answerTo: rabbitIncoming,
-        context: data
-      });  
+        context: data,
+      });
     });
   },
-
 };
 
 export default userabbit;
-

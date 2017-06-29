@@ -24,8 +24,6 @@ var _sparkProtocol = require('spark-protocol');
 
 var _rabbit = require('../lib/rabbit');
 
-var _rabbit2 = _interopRequireDefault(_rabbit);
-
 var _logger = require('../lib/logger');
 
 var _logger2 = _interopRequireDefault(_logger);
@@ -83,7 +81,7 @@ var HeadLessManagers = function HeadLessManagers(eventPublisher, eventProvider) 
   this._eventProvider = eventProvider;
   this._eventProvider.onNewEvent(function (event) {
     logger.info({ event: event }, 'New Event');
-    _rabbit2.default.send('EV_' + event.name, event);
+    _rabbit.rabbit.send('EV_' + event.name, event);
     if (event.name === 'spark/status') {
       if (event.data === 'online') {
         devices[event.deviceID] = true;
@@ -102,7 +100,7 @@ var HeadLessManagers = function HeadLessManagers(eventPublisher, eventProvider) 
                   attr = _context2.sent;
 
                   logger.info({ attr: attr }, 'Attributes found');
-                  _rabbit2.default.send('DEVICE_STATE', { online: attr });
+                  _rabbit.rabbit.send('DEVICE_STATE', { online: attr });
 
                 case 5:
                 case 'end':
@@ -114,20 +112,20 @@ var HeadLessManagers = function HeadLessManagers(eventPublisher, eventProvider) 
       }
       if (event.data === 'offline') {
         devices[event.deviceID] = false;
-        _rabbit2.default.send('DEVICE_STATE', {
+        _rabbit.rabbit.send('DEVICE_STATE', {
           offline: { deviceID: event.deviceID }
         });
       }
     }
   });
-  _rabbit2.default.registerReceiver({
+  _rabbit.rabbit.registerReceiver({
     DEVICE_ACTION: function DEVICE_ACTION(eventString, ack) {
       var event = JSON.parse(eventString);
       _this.run(event.action, event.context).then(function (answer) {
         logger.info({ ans: answer, ev: event }, 'Answer found for action');
         ack();
         if (event.answerTo !== undefined) {
-          _rabbit2.default.send(event.answerTo, { answer: answer, answerID: event.answerID });
+          _rabbit.rabbit.send(event.answerTo, { answer: answer, answerID: event.answerID });
         }
       }).catch(function (err) {
         logger.info({ err: err, ev: event }, 'Error found for action');
