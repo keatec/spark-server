@@ -1,6 +1,6 @@
 // @flow
 
-import { rabbit } from './lib/rabbit';
+import rabbit from './lib/rabbit';
 import Logger from './lib/logger';
 const logger = Logger.createModuleLogger(module);
 

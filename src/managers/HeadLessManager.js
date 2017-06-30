@@ -2,7 +2,7 @@
 
 import type { EventPublisher } from 'spark-protocol';
 import { SPARK_SERVER_EVENTS } from 'spark-protocol';
-import { rabbit } from '../lib/rabbit';
+import rabbit from '../lib/rabbit';
 import Logger from '../lib/logger';
 const logger = Logger.createModuleLogger(module);
 

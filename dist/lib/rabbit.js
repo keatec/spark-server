@@ -229,7 +229,7 @@ function maintenance() {
       logger.warn({ key: key }, 'action timeout');
     }
   });
-};
+}
 setInterval(maintenance, 5000).unref();
 
 var userabbit = {

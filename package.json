@@ -105,7 +105,7 @@
     "nullthrows": "^1.0.0",
     "request": "*",
     "rmfr": "^1.0.1",
-    "spark-protocol": "git+https://github.com/keatec/spark-protocol.git#bunyanlog",
+    "spark-protocol": "git+https://github.com/keatec/spark-protocol.git#dev",
     "uuid": "^3.0.1"
   },
   "devDependencies": {
