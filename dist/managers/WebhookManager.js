@@ -40,10 +40,6 @@ var _HttpError = require('../lib/HttpError');
 
 var _HttpError2 = _interopRequireDefault(_HttpError);
 
-var _logger = require('../lib/logger');
-
-var _logger2 = _interopRequireDefault(_logger);
-
 var _nullthrows = require('nullthrows');
 
 var _nullthrows2 = _interopRequireDefault(_nullthrows);
@@ -60,7 +56,13 @@ var _throttle = require('lodash/throttle');
 
 var _throttle2 = _interopRequireDefault(_throttle);
 
+var _logger = require('../lib/logger');
+
+var _logger2 = _interopRequireDefault(_logger);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var logger = _logger2.default.createModuleLogger(module);
 
 var parseEventData = function parseEventData(event) {
   try {
@@ -298,14 +300,14 @@ var WebhookManager = function WebhookManager(eventPublisher, permissionManager, 
 
         _this.runWebhookThrottled(webhook, event);
       } catch (error) {
-        _logger2.default.error('webhookError: ' + error);
+        logger.error({ err: error }, 'webhookError');
       }
     };
   };
 
   this.runWebhook = function () {
     var _ref6 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee6(webhook, event) {
-      var webhookVariablesObject, requestAuth, requestJson, requestFormData, requestHeaders, requestUrl, requestQuery, responseTopic, requestType, isJsonRequest, requestOptions, _responseBody, isResponseBodyAnObject, responseTemplate, responseEventData, chunks;
+      var webhookVariablesObject, requestAuth, requestJson, requestFormData, requestHeaders, requestUrl, requestQuery, responseTopic, requestType, requestOptions, _responseBody, isResponseBodyAnObject, responseTemplate, responseEventData, chunks;
 
       return _regenerator2.default.wrap(function _callee6$(_context6) {
         while (1) {
@@ -321,11 +323,10 @@ var WebhookManager = function WebhookManager(eventPublisher, permissionManager, 
               requestQuery = _this._compileJsonTemplate(webhook.query, webhookVariablesObject);
               responseTopic = _this._compileTemplate(webhook.responseTopic, webhookVariablesObject);
               requestType = _this._compileTemplate(webhook.requestType, webhookVariablesObject);
-              isJsonRequest = !!requestJson || !requestFormData;
               requestOptions = {
                 auth: requestAuth,
-                body: isJsonRequest && requestJson ? _this._getRequestData(requestJson, event, webhook.noDefaults) : undefined,
-                form: !isJsonRequest && requestFormData ? _this._getRequestData(requestFormData, event, webhook.noDefaults) : undefined,
+                body: requestJson ? _this._getRequestData(requestJson, event, webhook.noDefaults) : undefined,
+                form: !requestJson ? _this._getRequestData(requestFormData || null, event, webhook.noDefaults) || event.data : undefined,
                 headers: requestHeaders,
                 json: true,
                 method: validateRequestType((0, _nullthrows2.default)(requestType)),
@@ -333,20 +334,20 @@ var WebhookManager = function WebhookManager(eventPublisher, permissionManager, 
                 strictSSL: webhook.rejectUnauthorized,
                 url: (0, _nullthrows2.default)(requestUrl)
               };
-              _context6.next = 14;
+              _context6.next = 13;
               return _this._callWebhook(webhook, event, requestOptions);
 
-            case 14:
+            case 13:
               _responseBody = _context6.sent;
 
               if (_responseBody) {
-                _context6.next = 17;
+                _context6.next = 16;
                 break;
               }
 
               return _context6.abrupt('return');
 
-            case 17:
+            case 16:
               isResponseBodyAnObject = _responseBody === Object(_responseBody);
               responseTemplate = webhook.responseTemplate && isResponseBodyAnObject && _hogan2.default.compile(webhook.responseTemplate).render(_responseBody);
               responseEventData = responseTemplate || (isResponseBodyAnObject ? (0, _stringify2.default)(_responseBody) : _responseBody);
@@ -365,21 +366,21 @@ var WebhookManager = function WebhookManager(eventPublisher, permissionManager, 
               });
 
               _this._webhookLogger.log(event, webhook, requestOptions, _responseBody, responseEventData);
-              _context6.next = 28;
+              _context6.next = 27;
               break;
 
-            case 25:
-              _context6.prev = 25;
+            case 24:
+              _context6.prev = 24;
               _context6.t0 = _context6['catch'](0);
 
-              _logger2.default.error('webhookError: ' + _context6.t0);
+              logger.error({ err: _context6.t0 }, 'webhookError');
 
-            case 28:
+            case 27:
             case 'end':
               return _context6.stop();
           }
         }
-      }, _callee6, _this, [[0, 25]]);
+      }, _callee6, _this, [[0, 24]]);
     }));
 
     return function (_x4, _x5) {

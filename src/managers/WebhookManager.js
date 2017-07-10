@@ -14,11 +14,12 @@ import type {
 
 import hogan from 'hogan.js';
 import HttpError from '../lib/HttpError';
-import logger from '../lib/logger';
 import nullthrows from 'nullthrows';
 import request from 'request';
 import settings from '../settings';
 import throttle from 'lodash/throttle';
+import Logger from '../lib/logger';
+const logger = Logger.createModuleLogger(module);
 
 const parseEventData = (event: Event): Object => {
   try {
@@ -176,7 +177,7 @@ class WebhookManager {
 
       this.runWebhookThrottled(webhook, event);
     } catch (error) {
-      logger.error(`webhookError: ${error}`);
+      logger.error({ err: error }, 'webhookError');
     }
   };
 
@@ -224,14 +225,17 @@ class WebhookManager {
         webhookVariablesObject,
       );
 
-      const isJsonRequest = !!requestJson || !requestFormData;
       const requestOptions = {
         auth: (requestAuth: any),
-        body: isJsonRequest && requestJson
+        body: requestJson
           ? this._getRequestData(requestJson, event, webhook.noDefaults)
           : undefined,
-        form: !isJsonRequest && requestFormData
-          ? this._getRequestData(requestFormData, event, webhook.noDefaults)
+        form: !requestJson
+          ? this._getRequestData(
+              requestFormData || null,
+              event,
+              webhook.noDefaults,
+            ) || event.data
           : undefined,
         headers: requestHeaders,
         json: true,
@@ -288,7 +292,7 @@ class WebhookManager {
         responseEventData,
       );
     } catch (error) {
-      logger.error(`webhookError: ${error}`);
+      logger.error({ err: error }, 'webhookError');
     }
   };
 
