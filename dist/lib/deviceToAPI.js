@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", {
 var deviceToAPI = function deviceToAPI(device, result) {
   return {
     cellular: device.isCellular,
-    connected: device.connected,
+    connected: device.connected || false,
     current_build_target: device.currentBuildTarget,
     functions: device.functions || null,
     id: device.deviceID,
@@ -16,7 +16,8 @@ var deviceToAPI = function deviceToAPI(device, result) {
     last_iccid: device.last_iccid,
     last_ip_address: device.ip,
     name: device.name,
-    platform_id: device.particleProductId,
+    platform_id: device.platformId,
+    product_firmware_version: device.productFirmwareVersion,
     product_id: device.particleProductId,
     return_value: result,
     status: 'normal',

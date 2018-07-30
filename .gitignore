@@ -34,3 +34,4 @@ __test_data__
 *.pem
 *.pub.pem
 build
+.env

@@ -1,6 +1,6 @@
 // @flow
 
-import type { Device } from '../types';
+import type { Device, DeviceAttributes } from '../types';
 
 export type DeviceAPIType = {|
   cellular: boolean,
@@ -15,15 +15,19 @@ export type DeviceAPIType = {|
   last_ip_address: ?string,
   name: string,
   platform_id: number,
+  product_firmware_version: number,
   product_id: number,
   return_value?: mixed,
   status: string,
   variables?: ?Object,
 |};
 
-const deviceToAPI = (device: Device, result?: mixed): DeviceAPIType => ({
+const deviceToAPI = (
+  device: Device | DeviceAttributes,
+  result?: mixed,
+): DeviceAPIType => ({
   cellular: device.isCellular,
-  connected: device.connected,
+  connected: (device: any).connected || false,
   current_build_target: device.currentBuildTarget,
   functions: device.functions || null,
   id: device.deviceID,
@@ -33,7 +37,8 @@ const deviceToAPI = (device: Device, result?: mixed): DeviceAPIType => ({
   last_iccid: device.last_iccid,
   last_ip_address: device.ip,
   name: device.name,
-  platform_id: device.particleProductId,
+  platform_id: device.platformId,
+  product_firmware_version: device.productFirmwareVersion,
   product_id: device.particleProductId,
   return_value: result,
   status: 'normal',

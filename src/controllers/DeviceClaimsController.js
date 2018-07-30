@@ -7,6 +7,7 @@ import type { Device } from '../types';
 import Controller from './Controller';
 import httpVerb from '../decorators/httpVerb';
 import route from '../decorators/route';
+import nullthrows from 'nullthrows';
 
 class DeviceClaimsController extends Controller {
   _deviceManager: DeviceManager;
@@ -28,7 +29,9 @@ class DeviceClaimsController extends Controller {
     const claimCode = this._claimCodeManager.createClaimCode(this.user.id);
 
     const devices = await this._deviceManager.getAll();
-    const deviceIDs = devices.map((device: Device): string => device.deviceID);
+    const deviceIDs = devices.map((device: Device): string =>
+      nullthrows(device.deviceID),
+    );
     return this.ok({ claim_code: claimCode, device_ids: deviceIDs });
   }
 }

@@ -50,6 +50,10 @@ var _route = require('../decorators/route');
 
 var _route2 = _interopRequireDefault(_route);
 
+var _nullthrows = require('nullthrows');
+
+var _nullthrows2 = _interopRequireDefault(_nullthrows);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _applyDecoratedDescriptor(target, property, decorators, descriptor, context) {
@@ -97,7 +101,7 @@ var DeviceClaimsController = (_dec = (0, _httpVerb2.default)('post'), _dec2 = (0
   (0, _createClass3.default)(DeviceClaimsController, [{
     key: 'createClaimCode',
     value: function () {
-      var _ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee() {
+      var _ref = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee() {
         var claimCode, devices, deviceIDs;
         return _regenerator2.default.wrap(function _callee$(_context) {
           while (1) {
@@ -110,7 +114,7 @@ var DeviceClaimsController = (_dec = (0, _httpVerb2.default)('post'), _dec2 = (0
               case 3:
                 devices = _context.sent;
                 deviceIDs = devices.map(function (device) {
-                  return device.deviceID;
+                  return (0, _nullthrows2.default)(device.deviceID);
                 });
                 return _context.abrupt('return', this.ok({ claim_code: claimCode, device_ids: deviceIDs }));
 

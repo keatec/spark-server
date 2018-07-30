@@ -37,15 +37,11 @@ const injectUserMiddleware = (container: Container): Middleware => (
     const user = token && token.user;
     // eslint-disable-next-line no-param-reassign
     (request: any).user = user;
-    container.constitute('UserRepository').setCurrentUser(user);
+    container.constitute('IUserRepository').setCurrentUser(user);
   }
   next();
 };
 
-// in old codebase there was _keepAlive() function in controllers , which
-// prevents of closing server-sent-events stream if there aren't events for
-// a long time, but according to the docs sse keep connection alive automatically.
-// if there will be related issues in the future, we can return _keepAlive() back.
 const serverSentEventsMiddleware = (): Middleware => (
   request: $Request,
   response: $Response,
@@ -135,6 +131,19 @@ export default (
           } = request.body;
 
           try {
+            (allowedUploads || [])
+              .forEach(
+                ({ maxCount, name }: { maxCount: number, name: string }) => {
+                  if (!name || !request.files) {
+                    return;
+                  }
+                  const file = (request.files: any)[name];
+                  if (!file) {
+                    return;
+                  }
+                  body[name] = maxCount === 1 ? file[0] : file;
+                },
+              );
             const functionResult = mappedFunction.call(
               controllerInstance,
               ...values,
@@ -146,7 +155,10 @@ export default (
                 ? await Promise.race([
                     functionResult,
                     new Promise(
-                      (resolve: () => void, reject: () => void): number =>
+                      (
+                        resolve: () => void,
+                        reject: (error: Error) => void,
+                      ): number =>
                         setTimeout(
                           (): void => reject(new Error('timeout')),
                           settings.API_TIMEOUT,
@@ -177,18 +189,16 @@ export default (
     response.sendStatus(404);
   });
 
-  (app: any).use(
-    (
-      error: Error,
-      request: $Request,
-      response: $Response,
-      // eslint-disable-next-line no-unused-vars
-      next: NextFunction,
-    ) => {
-      response.status(400).json({
-        error: error.code ? error.code : error,
-        ok: false,
-      });
-    },
-  );
+  (app: any).use((
+    error: Error,
+    request: $Request,
+    response: $Response,
+    // eslint-disable-next-line no-unused-vars
+    next: NextFunction,
+  ) => {
+    response.status(400).json({
+      error: error.code ? error.code : error,
+      ok: false,
+    });
+  });
 };

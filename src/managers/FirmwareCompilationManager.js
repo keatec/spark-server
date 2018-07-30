@@ -8,7 +8,6 @@ import path from 'path';
 import mkdirp from 'mkdirp';
 import rmfr from 'rmfr';
 import { spawn } from 'child_process';
-import { knownPlatforms } from 'spark-protocol';
 import settings from '../settings';
 import Logger from '../lib/logger';
 const logger = Logger.createModuleLogger(module);
@@ -26,15 +25,18 @@ const MAKE_PATH = path.join(settings.FIRMWARE_REPOSITORY_DIRECTORY, 'main');
 
 type CompilationResponse = {
   binary_id: string,
-  expires_at: Date,
   errors?: Array<string>,
+  expires_at: Date,
   sizeInfo: string,
 };
 
 const FILE_NAME_BY_KEY = new Map();
 
 const getKey = (): string =>
-  crypto.randomBytes(24).toString('hex').substring(0, 24);
+  crypto
+    .randomBytes(24)
+    .toString('hex')
+    .substring(0, 24);
 
 const getUniqueKey = (): string => {
   let key = getKey();
@@ -77,7 +79,14 @@ class FirmwareCompilationManager {
       return null;
     }
 
-    let platformName = knownPlatforms[platformID];
+    let platformName = {
+      '0': 'Core',
+      '10': 'Electron',
+      '103': 'Bluz',
+      '6': 'Photon',
+      '8': 'P1',
+      '88': 'Duo',
+    }[platformID];
     if (!platformName) {
       return null;
     }

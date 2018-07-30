@@ -112,7 +112,7 @@ var WebhookManager = function WebhookManager(eventPublisher, permissionManager, 
   this._errorsCountByWebhookID = new _map2.default();
 
   this.create = function () {
-    var _ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee(model) {
+    var _ref = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee(model) {
       var webhook;
       return _regenerator2.default.wrap(function _callee$(_context) {
         while (1) {
@@ -141,7 +141,7 @@ var WebhookManager = function WebhookManager(eventPublisher, permissionManager, 
   }();
 
   this.deleteByID = function () {
-    var _ref2 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee2(webhookID) {
+    var _ref2 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee2(webhookID) {
       var webhook;
       return _regenerator2.default.wrap(function _callee2$(_context2) {
         while (1) {
@@ -180,7 +180,7 @@ var WebhookManager = function WebhookManager(eventPublisher, permissionManager, 
     };
   }();
 
-  this.getAll = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee3() {
+  this.getAll = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee3() {
     return _regenerator2.default.wrap(function _callee3$(_context3) {
       while (1) {
         switch (_context3.prev = _context3.next) {
@@ -200,7 +200,7 @@ var WebhookManager = function WebhookManager(eventPublisher, permissionManager, 
   }));
 
   this.getByID = function () {
-    var _ref4 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee4(webhookID) {
+    var _ref4 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee4(webhookID) {
       var webhook;
       return _regenerator2.default.wrap(function _callee4$(_context4) {
         while (1) {
@@ -235,7 +235,7 @@ var WebhookManager = function WebhookManager(eventPublisher, permissionManager, 
     };
   }();
 
-  this._init = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee5() {
+  this._init = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee5() {
     var allWebhooks;
     return _regenerator2.default.wrap(function _callee5$(_context5) {
       while (1) {
@@ -306,8 +306,8 @@ var WebhookManager = function WebhookManager(eventPublisher, permissionManager, 
   };
 
   this.runWebhook = function () {
-    var _ref6 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee6(webhook, event) {
-      var webhookVariablesObject, requestAuth, requestJson, requestFormData, requestHeaders, requestUrl, requestQuery, responseTopic, requestType, requestOptions, _responseBody, isResponseBodyAnObject, responseTemplate, responseEventData, chunks;
+    var _ref6 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee6(webhook, event) {
+      var webhookVariablesObject, requestAuth, requestJson, requestFormData, requestHeaders, requestUrl, requestQuery, responseTopic, requestType, isGetRequest, requestOptions, _responseBody, isResponseBodyAnObject, responseTemplate, responseEventData, chunks;
 
       return _regenerator2.default.wrap(function _callee6$(_context6) {
         while (1) {
@@ -323,31 +323,32 @@ var WebhookManager = function WebhookManager(eventPublisher, permissionManager, 
               requestQuery = _this._compileJsonTemplate(webhook.query, webhookVariablesObject);
               responseTopic = _this._compileTemplate(webhook.responseTopic, webhookVariablesObject);
               requestType = _this._compileTemplate(webhook.requestType, webhookVariablesObject);
+              isGetRequest = requestType === 'GET';
               requestOptions = {
                 auth: requestAuth,
-                body: requestJson ? _this._getRequestData(requestJson, event, webhook.noDefaults) : undefined,
-                form: !requestJson ? _this._getRequestData(requestFormData || null, event, webhook.noDefaults) || event.data : undefined,
+                body: requestJson && !isGetRequest ? _this._getRequestData(requestJson, event, webhook.noDefaults) : undefined,
+                form: !requestJson && !isGetRequest ? _this._getRequestData(requestFormData || null, event, webhook.noDefaults) || event.data : undefined,
                 headers: requestHeaders,
                 json: true,
                 method: validateRequestType((0, _nullthrows2.default)(requestType)),
-                qs: requestQuery,
+                qs: isGetRequest ? _this._getRequestData(requestQuery, event, webhook.noDefaults) : requestQuery,
                 strictSSL: webhook.rejectUnauthorized,
                 url: (0, _nullthrows2.default)(requestUrl)
               };
-              _context6.next = 13;
+              _context6.next = 14;
               return _this._callWebhook(webhook, event, requestOptions);
 
-            case 13:
+            case 14:
               _responseBody = _context6.sent;
 
               if (_responseBody) {
-                _context6.next = 16;
+                _context6.next = 17;
                 break;
               }
 
               return _context6.abrupt('return');
 
-            case 16:
+            case 17:
               isResponseBodyAnObject = _responseBody === Object(_responseBody);
               responseTemplate = webhook.responseTemplate && isResponseBodyAnObject && _hogan2.default.compile(webhook.responseTemplate).render(_responseBody);
               responseEventData = responseTemplate || (isResponseBodyAnObject ? (0, _stringify2.default)(_responseBody) : _responseBody);
@@ -366,21 +367,21 @@ var WebhookManager = function WebhookManager(eventPublisher, permissionManager, 
               });
 
               _this._webhookLogger.log(event, webhook, requestOptions, _responseBody, responseEventData);
-              _context6.next = 27;
+              _context6.next = 28;
               break;
 
-            case 24:
-              _context6.prev = 24;
+            case 25:
+              _context6.prev = 25;
               _context6.t0 = _context6['catch'](0);
 
               logger.error({ err: _context6.t0 }, 'webhookError');
 
-            case 27:
+            case 28:
             case 'end':
               return _context6.stop();
           }
         }
-      }, _callee6, _this, [[0, 24]]);
+      }, _callee6, _this, [[0, 25]]);
     }));
 
     return function (_x4, _x5) {
@@ -400,7 +401,7 @@ var WebhookManager = function WebhookManager(eventPublisher, permissionManager, 
           _this._incrementWebhookErrorCounter(webhook.id);
 
           _this._eventPublisher.publish({
-            data: errorMessage,
+            data: errorMessage || '',
             isPublic: false,
             name: _this._compileErrorResponseTopic(webhook, event),
             userID: event.userID
@@ -496,7 +497,7 @@ var WebhookManager = function WebhookManager(eventPublisher, permissionManager, 
   this._webhookLogger = webhookLogger;
   this._webhookRepository = webhookRepository;
 
-  (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee7() {
+  (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee7() {
     return _regenerator2.default.wrap(function _callee7$(_context7) {
       while (1) {
         switch (_context7.prev = _context7.next) {

@@ -50,8 +50,6 @@ var _rmfr2 = _interopRequireDefault(_rmfr);
 
 var _child_process = require('child_process');
 
-var _sparkProtocol = require('spark-protocol');
-
 var _settings = require('../settings');
 
 var _settings2 = _interopRequireDefault(_settings);
@@ -114,7 +112,7 @@ FirmwareCompilationManager.getBinaryForID = function (id) {
 };
 
 FirmwareCompilationManager.compileSource = function () {
-  var _ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee(platformID, files) {
+  var _ref = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee(platformID, files) {
     var platformName, appFolder, appPath, id, binPath, makeProcess, errors, sizeInfo, date, config;
     return _regenerator2.default.wrap(function _callee$(_context) {
       while (1) {
@@ -128,7 +126,14 @@ FirmwareCompilationManager.compileSource = function () {
             return _context.abrupt('return', null);
 
           case 2:
-            platformName = _sparkProtocol.knownPlatforms[platformID];
+            platformName = {
+              '0': 'Core',
+              '10': 'Electron',
+              '103': 'Bluz',
+              '6': 'Photon',
+              '8': 'P1',
+              '88': 'Duo'
+            }[platformID];
 
             if (platformName) {
               _context.next = 5;

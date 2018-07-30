@@ -42,14 +42,14 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var logger = _logger2.default.createModuleLogger(module);
 
-var PermissionManager = function PermissionManager(deviceAttributeRepository, userRepository, webhookRepository, oauthServer) {
+var PermissionManager = function PermissionManager(deviceAttributeRepository, organizationRepository, userRepository, webhookRepository, oauthServer) {
   var _this = this;
 
   (0, _classCallCheck3.default)(this, PermissionManager);
   this._repositoriesByEntityName = new _map2.default();
 
   this.checkPermissionsForEntityByID = function () {
-    var _ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee(entityName, id) {
+    var _ref = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee(entityName, id) {
       return _regenerator2.default.wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
@@ -74,7 +74,7 @@ var PermissionManager = function PermissionManager(deviceAttributeRepository, us
   }();
 
   this.getAllEntitiesForCurrentUser = function () {
-    var _ref2 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee2(entityName) {
+    var _ref2 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee2(entityName) {
       var currentUser;
       return _regenerator2.default.wrap(function _callee2$(_context2) {
         while (1) {
@@ -101,7 +101,7 @@ var PermissionManager = function PermissionManager(deviceAttributeRepository, us
   }();
 
   this.getEntityByID = function () {
-    var _ref3 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee3(entityName, id) {
+    var _ref3 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee3(entityName, id) {
       var entity;
       return _regenerator2.default.wrap(function _callee3$(_context3) {
         while (1) {
@@ -144,7 +144,7 @@ var PermissionManager = function PermissionManager(deviceAttributeRepository, us
     };
   }();
 
-  this._createDefaultAdminUser = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee4() {
+  this._createDefaultAdminUser = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee4() {
     var token;
     return _regenerator2.default.wrap(function _callee4$(_context4) {
       while (1) {
@@ -190,7 +190,7 @@ var PermissionManager = function PermissionManager(deviceAttributeRepository, us
     return currentUser.role === 'administrator' || currentUser.id === ownerID;
   };
 
-  this._generateAdminToken = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee5() {
+  this._generateAdminToken = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee5() {
     var request, response, tokenPayload;
     return _regenerator2.default.wrap(function _callee5$(_context5) {
       while (1) {
@@ -229,8 +229,8 @@ var PermissionManager = function PermissionManager(deviceAttributeRepository, us
       }
     }, _callee5, _this);
   }));
-  this._init = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee6() {
-    var defaultAdminUser;
+  this._init = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee6() {
+    var defaultAdminUser, organizations;
     return _regenerator2.default.wrap(function _callee6$(_context6) {
       while (1) {
         switch (_context6.prev = _context6.next) {
@@ -247,7 +247,7 @@ var PermissionManager = function PermissionManager(deviceAttributeRepository, us
             }
 
             logger.info({ token: defaultAdminUser.accessTokens[0].accessToken }, 'Default Admin token');
-            _context6.next = 9;
+            _context6.next = 12;
             break;
 
           case 7:
@@ -255,6 +255,31 @@ var PermissionManager = function PermissionManager(deviceAttributeRepository, us
             return _this._createDefaultAdminUser();
 
           case 9:
+            _context6.next = 11;
+            return _this._userRepository.getByUsername(_settings2.default.DEFAULT_ADMIN_USERNAME);
+
+          case 11:
+            defaultAdminUser = _context6.sent;
+
+          case 12:
+            _context6.next = 14;
+            return _this._organizationRepository.getAll();
+
+          case 14:
+            organizations = _context6.sent;
+
+            if (!(!organizations.length && defaultAdminUser)) {
+              _context6.next = 18;
+              break;
+            }
+
+            _context6.next = 18;
+            return _this._organizationRepository.create({
+              name: 'DEFAULT ORG',
+              user_ids: [defaultAdminUser.id]
+            });
+
+          case 18:
           case 'end':
             return _context6.stop();
         }
@@ -262,12 +287,13 @@ var PermissionManager = function PermissionManager(deviceAttributeRepository, us
     }, _callee6, _this);
   }));
 
+  this._organizationRepository = organizationRepository;
   this._userRepository = userRepository;
   this._repositoriesByEntityName.set('deviceAttributes', deviceAttributeRepository);
   this._repositoriesByEntityName.set('webhook', webhookRepository);
   this._oauthServer = oauthServer;
 
-  (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee7() {
+  (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee7() {
     return _regenerator2.default.wrap(function _callee7$(_context7) {
       while (1) {
         switch (_context7.prev = _context7.next) {
